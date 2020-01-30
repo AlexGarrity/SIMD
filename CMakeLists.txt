@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(agSIMD VERSION 1.0.0 DESCRIPTION "Simple library for handling Pixels")
+project(SIMD VERSION 1.0.0 DESCRIPTION "Simple library for handling Pixels")
 include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -10,6 +10,11 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/Core.hpp.in" "${CMAKE_SOURCE_DIR}/incl
 
 set(BUILD_agSIMD TRUE CACHE BOOL "Build the library")
 set(BUILD_SHARED_LIBS TRUE CACHE BOOL "Build the library shared (true) or static (false)")
+set(RUN_UNIT_TESTS FALSE CACHE BOOL "Run unit tests to check that the library works")
+
+if (${RUN_UNIT_TESTS})
+    include(${CMAKE_SOURCE_DIR}/cmake/UnitTests.cmake)
+endif()
 
 if(${BUILD_agSIMD})
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "BUILD_LIB")
@@ -36,7 +41,7 @@ include(${CMAKE_SOURCE_DIR}/cmake/TestAVX2.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/TestSSE2.cmake)
     
 # Try AVX2 first because we prefer to use this over SSE
-# TestAVX2()
+TestAVX2()
 if("${HAS_AVX2}" STREQUAL "0")
     message(NOTICE "CPU supports AVX2, enabling AVX2 maths")
     # Enable the AVX versions of Math and PackedMath
@@ -51,7 +56,7 @@ if("${HAS_AVX2}" STREQUAL "0")
     set(EXTRA_COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS} ${AVX2_FLAG})
 else()
     # No AVX2, so we'll instead see if we can use SSE2
-    # TestSSE2()
+    TestSSE2()
     if("${HAS_SSE2}" STREQUAL "0")
         message(NOTICE "CPU supports SSE2, enabling SSE2 maths")
         # Enable the AVX versions of Math and PackedMath
@@ -67,7 +72,7 @@ else()
     else()
         # Enable the vanilla versions of Math and PackedMath
         message(NOTICE "SIMD extensions not available, using vanilla maths")
-        message(WARNING "You likely will not see any speed improvement over regualar code")
+        message(WARNING "You likely will not see any speed improvement over regular code")
         set(MATH_SOURCE
             ${CMAKE_SOURCE_DIR}/src/Math/Math.cpp
         )
@@ -81,7 +86,7 @@ else()
 endif()
 
 add_library(
-    agSIMD ${LIBRARY_KEYWORD} ${SOURCE} ${MATH_SOURCE} ${PACKED_MATH_SOURCE}
+    SIMD ${LIBRARY_KEYWORD} ${SOURCE} ${MATH_SOURCE} ${PACKED_MATH_SOURCE}
 )
 
 if(NOT "${EXTRA_COMPILE_DEFS}" STREQUAL "")
@@ -89,11 +94,11 @@ if(NOT "${EXTRA_COMPILE_DEFS}" STREQUAL "")
 endif()
 
 if(NOT "${EXTRA_COMPILE_FLAGS}" STREQUAL "")
-    set_target_properties(agSIMD PROPERTIES COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
+    set_target_properties(SIMD PROPERTIES COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
 endif()
 
 set_target_properties(
-    agSIMD PROPERTIES
+    SIMD PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION}
     PREFIX "ag"
@@ -101,11 +106,11 @@ set_target_properties(
 )
 
 target_include_directories(
-    agSIMD PRIVATE ${CMAKE_SOURCE_DIR}/include
+    SIMD PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
 
 install(
-    TARGETS agSIMD
+    TARGETS SIMD
     EXPORT agSIMDConfig
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )

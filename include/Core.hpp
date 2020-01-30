@@ -1,7 +1,9 @@
 #pragma once
 
+
+
 #define LIB_VERSION "1.0.0"
-#define LIB_NAME "agSIMD"
+#define LIB_NAME "SIMD"
 
 #if defined(_MSC_VER)
 // Windows DLL exporting
@@ -18,13 +20,16 @@
 #define AG_API
 #endif
 #else
-#error agSIMD is not supported on your platform
+#error SIMD is not supported on your platform
 #endif
 
 #if defined(FOUND_AVX2)
 #include <immintrin.h>
+#pragma message "Using AVX extensions"
 #elif defined(FOUND_SSE2)
 #include <immintrin.h>
+#pragma message "Using SSE extensions"
 #else
+#pragma message "Not using extensions"
 // No Extensions?
 #endif

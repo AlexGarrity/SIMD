@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 #define LIB_VERSION "${PROJECT_VERSION}"
 #define LIB_NAME "${PROJECT_NAME}"
 
@@ -23,8 +25,11 @@
 
 #if defined(FOUND_AVX2)
 #include <immintrin.h>
+#pragma message "Using AVX extensions"
 #elif defined(FOUND_SSE2)
 #include <immintrin.h>
+#pragma message "Using SSE extensions"
 #else
+#pragma message "Not using extensions"
 // No Extensions?
 #endif
