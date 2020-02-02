@@ -1,23 +1,32 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(SIMD VERSION 1.0.0 DESCRIPTION "Simple library for handling Pixels")
+project(SIMD VERSION 1.0.0 DESCRIPTION "Simple library for handling SIMD maths")
 include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 
-message(STATUS "Using agSIMD Version ${PROJECT_VERSION}")
+message(STATUS "Using ${PROJECT_NAME} Version ${PROJECT_VERSION}")
 
+# Configure the core file with the project name and version
 configure_file("${CMAKE_SOURCE_DIR}/cmake/Core.hpp.in" "${CMAKE_SOURCE_DIR}/include/Core.hpp")
 
+# Set the default build type to release
 set(CMAKE_BUILD_TYPE "Release")
+
+# Build variables
 set(BUILD_agSIMD TRUE CACHE BOOL "Build the library")
 set(BUILD_SHARED_LIBS TRUE CACHE BOOL "Build the library shared (true) or static (false)")
+
+# Unit test variables
 set(TEST_MATH FALSE CACHE BOOL "Run unit tests to check that the math component works")
 set(TEST_MATH_PACKED FALSE CACHE BOOL "Run unit tests to check that the packed math component works")
+
+# Extension variables
 set(EXTENSION_DISABLE_SSE2 FALSE CACHE BOOL "Force compilation not to use SSE2+ extensions")
 set(EXTENSION_DISABLE_SSE4 FALSE CACHE BOOL "Force compilation not to use SSE4+ extensions")
 set(EXTENSION_DISABLE_AVX2 FALSE CACHE BOOL "Force compilation not to use AVX2+ extensions")
 set(EXTENSION_RESET_CHECKS FALSE CACHE BOOL "Reset the extension checks")
 
+# If we're running unit tests, add them in now
 if (${TEST_MATH})
     set(CMAKE_BUILD_TYPE "Debug")
     include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsMath.cmake)
@@ -27,26 +36,23 @@ if (${TEST_MATH_PACKED})
     include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsPacked.cmake)
 endif()
 
+# Set BUILD_LIB to switch from import to export
 if(${BUILD_agSIMD})
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "BUILD_LIB")
 endif() 
 
+# Switch between building static and shared lib files
 if(${BUILD_SHARED_LIBS})
     set (LIBRARY_KEYWORD "SHARED")
 else()
     set (LIBRARY_KEYWORD "STATIC")
 endif()
 
+# Set the math sources
 set(SOURCE
-    # Pixel sources
     ${CMAKE_SOURCE_DIR}/src/Math.cpp
     ${CMAKE_SOURCE_DIR}/src/PackedMath.cpp
 )
-
-# AVX2 Check goes here
-include(${CMAKE_SOURCE_DIR}/cmake/TestAVX2.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/TestSSE2.cmake)
-include(${CMAKE_SOURCE_DIR}/cmake/TestSSE4.cmake)
 
 # Are we resetting the checks and doing them again?
 if (${EXTENSION_RESET_CHECKS})
@@ -57,15 +63,19 @@ endif()
 
 # Check which extensions we have, if we need to
 if (NOT DEFINED CACHE{HAS_AVX2})
+    include(${CMAKE_SOURCE_DIR}/cmake/TestAVX2.cmake)
     TestAVX2()
 endif()
 if (NOT DEFINED CACHE{HAS_SSE4})
+    include(${CMAKE_SOURCE_DIR}/cmake/TestSSE4.cmake)
     TestSSE4()
 endif()
 if (NOT DEFINED CACHE{HAS_SSE2})
+    include(${CMAKE_SOURCE_DIR}/cmake/TestSSE2.cmake)
     TestSSE2()
 endif()
 
+# Disable extensions if the user requests it
 if("${EXTENSION_DISABLE_AVX2}" STREQUAL "ON")
     message(NOTICE "We're forcing the compiler not to use AVX2+")
     set(HAS_AVX2 -1)
@@ -139,18 +149,22 @@ else()
     # No extra definitions needed.  Vanilla C++
 endif()
 
+# Add the sources to the library
 add_library(
     SIMD ${LIBRARY_KEYWORD} ${SOURCE} ${MATH_SOURCE} ${PACKED_MATH_SOURCE}
 )
 
+# If we have extra compile definitions, add them now
 if(NOT "${EXTRA_COMPILE_DEFS}" STREQUAL "")
     add_compile_definitions(${EXTRA_COMPILE_DEFS})
 endif()
 
+# If we have extra compile flags, add them now
 if(NOT "${EXTRA_COMPILE_FLAGS}" STREQUAL "")
     set_target_properties(SIMD PROPERTIES COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
 endif()
 
+# Se the library properties
 set_target_properties(
     SIMD PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -159,10 +173,12 @@ set_target_properties(
     OUTPUT_NAME "SIMD"
 )
 
+# Add the include directory to the library
 target_include_directories(
     SIMD PRIVATE ${CMAKE_SOURCE_DIR}/include
 )
 
+# Install stuff
 install(
     TARGETS SIMD
     EXPORT agSIMDConfig
