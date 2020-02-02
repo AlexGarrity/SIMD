@@ -9,7 +9,7 @@ find_package(agSIMD REQUIRED)
 set (TEST_NAME ${PROJECT_NAME}Test)
 
 file(GLOB_RECURSE TEST_SRC
-    ${CMAKE_SOURCE_DIR}/test/*.cpp
+    ${CMAKE_SOURCE_DIR}/test/TestMath.cpp
 )
 
 

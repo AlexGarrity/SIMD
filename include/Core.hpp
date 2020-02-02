@@ -22,14 +22,3 @@
 #else
 #error SIMD is not supported on your platform
 #endif
-
-#if defined(FOUND_AVX2)
-#include <immintrin.h>
-#pragma message "Using AVX extensions"
-#elif defined(FOUND_SSE2)
-#include <immintrin.h>
-#pragma message "Using SSE extensions"
-#else
-#pragma message "Not using extensions"
-// No Extensions?
-#endif

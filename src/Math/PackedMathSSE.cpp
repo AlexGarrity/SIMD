@@ -2,6 +2,8 @@
 
 #include "PackedMath.hpp"
 
+#include <immintrin.h>
+
 namespace ag {
 namespace SIMD {
 
@@ -19,7 +21,7 @@ namespace SIMD {
 */
 
 inline WORD BQuadToWord(BQuad v) {
-  return (W(v[0]) | W(v[1]) << 8 | W(v[2]) << 16 | W(v[3]) << 24);
+  return (W(v.a) | W(v.b) << 8 | W(v.c) << 16 | W(v.d) << 24);
 }
 
 inline BQuad WordToBQuad(WORD v) {
@@ -27,9 +29,9 @@ inline BQuad WordToBQuad(WORD v) {
 }
 
 inline DWORD BQuad2ToDword(BQuad2 v) {
-  return (DWORD(v.a[0]) | DWORD(v.a[1]) << 8 | DWORD(v.a[2]) << 16 |
-          DWORD(v.a[3]) << 24 | DWORD(v.a[0]) << 32 | DWORD(v.a[1]) << 40 |
-          DWORD(v.a[2]) << 48 | DWORD(v.a[3]) << 56);
+  return (DWORD(v.a.a) | DWORD(v.a.b) << 8 | DWORD(v.a.c) << 16 |
+          DWORD(v.a.d) << 24 | DWORD(v.a.a) << 32 | DWORD(v.a.b) << 40 |
+          DWORD(v.a.c) << 48 | DWORD(v.a.d) << 56);
 }
 
 inline BQuad2 DwordToBQuad2(DWORD v) {
@@ -37,7 +39,7 @@ inline BQuad2 DwordToBQuad2(DWORD v) {
 }
 
 inline DWORD SQuadToDword(SQuad v) {
-  return (D(v[0]) | (D(v[1]) << 16) | (D(v[2]) << 32) | (D(v[3]) << 48));
+  return (D(v.a) | (D(v.b) << 16) | (D(v.c) << 32) | (D(v.d) << 48));
 }
 
 inline SQuad DwordToSQuad(DWORD v) {
@@ -76,7 +78,7 @@ inline SQuad2 M128ToSQuad2(__m128i v) {
   return {DwordToSQuad(v[0]), DwordToSQuad(v[1])};
 }
 
-__m128 FQuadToM128(FQuad v) { return {v[0], v[1], v[2], v[3]}; }
+__m128 FQuadToM128(FQuad v) { return {v.a, v.b, v.c, v.d}; }
 
 FQuad M128ToFQuad(__m128 v) { return {v[0], v[1], v[2], v[3]}; }
 
@@ -112,10 +114,10 @@ BQuad4 Mul(BQuad4 a, BQuad4 b) {
 }
 
 BQuad4 Div(BQuad4 a, BQuad4 b) {
-  auto r1 = Div(a.a[0], a.a[1], a.a[2], a.a[3], b.a[0], b.a[1], b.a[2], b.a[3]);
-  auto r2 = Div(a.b[0], a.b[1], a.b[2], a.b[3], b.b[0], b.b[1], b.b[2], b.b[3]);
-  auto r3 = Div(a.c[0], a.c[1], a.c[2], a.c[3], b.c[0], b.c[1], b.c[2], b.c[3]);
-  auto r4 = Div(a.d[0], a.d[1], a.d[2], a.d[3], b.d[0], b.d[1], b.d[2], b.d[3]);
+  auto r1 = Div(a.a, b.a);
+  auto r2 = Div(a.b, b.b);
+  auto r3 = Div(a.c, b.c);
+  auto r4 = Div(a.d, b.d);
   return {r1, r2, r4, r4};
 }
 
@@ -154,15 +156,10 @@ BQuad8 Mul(BQuad8 a, BQuad8 b) {
 }
 
 BQuad8 Div(BQuad8 a, BQuad8 b) {
-  auto r1 = Div(a.a[0], a.a[1], a.a[2], a.a[3], b.a[0], b.a[1], b.a[2], b.a[3]);
-  auto r2 = Div(a.b[0], a.b[1], a.b[2], a.b[3], b.b[0], b.b[1], b.b[2], b.b[3]);
-  auto r3 = Div(a.c[0], a.c[1], a.c[2], a.c[3], b.c[0], b.c[1], b.c[2], b.c[3]);
-  auto r4 = Div(a.d[0], a.d[1], a.d[2], a.d[3], b.d[0], b.d[1], b.d[2], b.d[3]);
-  auto r5 = Div(a.e[0], a.e[1], a.e[2], a.e[3], b.e[0], b.e[1], b.e[2], b.e[3]);
-  auto r6 = Div(a.f[0], a.f[1], a.f[2], a.f[3], b.f[0], b.f[1], b.f[2], b.f[3]);
-  auto r7 = Div(a.g[0], a.g[1], a.g[2], a.g[3], b.g[0], b.g[1], b.g[2], b.g[3]);
-  auto r8 = Div(a.h[0], a.h[1], a.h[2], a.h[3], b.h[0], b.h[1], b.h[2], b.h[3]);
-  return {r1, r2, r4, r4, r5, r6, r7, r8};
+  auto r1 = Div(BQuad4(a.a, a.b, a.c, a.d), BQuad4(b.a, b.b, b.c, b.d));
+  auto r2 = Div(BQuad4(a.e, a.f, a.g, a.h), BQuad4(b.e, b.f, b.g, b.h));
+
+  return {r1, r2};
 }
 
 FQuad2 Add(FQuad2 a, FQuad2 b) {
@@ -189,5 +186,5 @@ FQuad2 Div(FQuad2 a, FQuad2 b) {
   return {M128ToFQuad(r1), M128ToFQuad(r2)};
 }
 
-} // namespace Pixel
+} // namespace SIMD
 } // namespace ag

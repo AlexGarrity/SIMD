@@ -1,249 +1,140 @@
 #include "Math/MathSSE.hpp"
 
 #include "Math.hpp"
+#include "Quad.hpp"
+
+#include <immintrin.h>
 
 // Extensions are enabled, so use AVX2 rather than regular maths
 
 namespace ag {
 namespace SIMD {
 
-#define B(x) static_cast<BYTE>(x)
-#define W(x) static_cast<WORD>(x)
-#define D(x) static_cast<DWORD>(x)
-
 // Some handy little helper functions for unpacking __mm256 types
 BQuad UnpackChar(__m128i chars) {
-  BQuad out;
-  // These are cast as they sometimes come in as wider values
-  out[0] = static_cast<BYTE>(chars[0]);
-  out[1] = static_cast<BYTE>(chars[1] >> 16);
-  out[2] = static_cast<BYTE>(chars[2]);
-  out[3] = static_cast<BYTE>(chars[3] >> 16);
-  return out;
+  return {B(chars[0]), B(chars[1] >> 8), B(chars[2] >> 16), B(chars[3] >> 24)};
+}
+
+BQuad UnpackInt(__m128i ints) {
+  return {B(ints[0]), B(ints[1] >> 32), B(ints[2]), B(ints[3] >> 32)};
 }
 
 FQuad UnpackFloat(__m128 floats) {
-  FQuad out;
-  out[0] = floats[0];
-  out[1] = floats[1];
-  out[2] = floats[2];
-  out[3] = floats[3];
-  return out;
+  return {floats[0], floats[1], floats[2], floats[3]};
 }
 
 DQuad UnpackDouble(__m128d d1, __m128d d2) {
-  DQuad out;
-  out[0] = d1[0];
-  out[1] = d1[1];
-  out[2] = d2[0];
-  out[3] = d2[1];
-  return out;
+  return {d1[0], d1[1], d2[0], d2[1]};
 }
 
 __m128i PackBQuad(BQuad b) {
-  __m128i out;
-  out[0] = D(b[0]) | D(b[1]) << 16;
-  out[1] = D(b[2]) | D(b[3]) << 16;
-  return out;
+  return {iD(b.a) | iD(b.b) << 8 | iD(b.c) << 16 | iD(b.d) << 24};
 }
 
-BQuad Add(BYTEQUAD) {
-  __m128i a = PackBQuad(BQuad(a1, b1, c1, d1));
-  __m128i b = PackBQuad(BQuad(a2, b2, c2, d2));
-  auto result = _mm_adds_epu8(a, b);
-  return UnpackChar(result);
+__m128i PackBQuadInt(BQuad b) {
+  return {iD(b.a) | iD(b.b) << 32, iD(b.c) | iD(b.d) << 32};
 }
 
-FQuad Add(FLOATQUAD) {
-  __m128 a{a1, b1, c1, d1};
-  __m128 b{a2, b2, c2, d2};
+
+
+BQuad Add(const BQuad qA, const BQuad qB) {
+  __m128i a = PackBQuadInt(BQuad(qA.a, qA.b, qA.c, qA.d));
+  __m128i b = PackBQuadInt(BQuad(qB.a, qB.b, qB.c, qB.d));
+  auto result = _mm_add_epi32(a, b);
+  return UnpackInt(result);
+}
+
+FQuad Add(const FQuad qA, const FQuad qB) {
+  __m128 a{qA.a, qA.b, qA.c, qA.d};
+  __m128 b{qB.a, qB.b, qB.c, qB.d};
   auto result = _mm_add_ps(a, b);
   return UnpackFloat(result);
 }
 
-DQuad Add(DOUBLEQUAD) {
-  __m128d ax{a1, b1};
-  __m128d ay{c1, d1};
-  __m128d bx{a2, b2};
-  __m128d by{c2, d2};
+DQuad Add(const DQuad qA, const DQuad qB) {
+  __m128d ax{qA.a, qA.b};
+  __m128d ay{qA.c, qA.d};
+  __m128d bx{qB.a, qB.b};
+  __m128d by{qB.c, qB.d};
   auto r1 = _mm_add_pd(ax, bx);
   auto r2 = _mm_add_pd(ay, by);
   return UnpackDouble(r1, r2);
 }
 
-BQuad Mul(BYTEQUAD) {
-  __m128i a = PackBQuad(BQuad(a1, b1, c1, d1));
-  __m128i b = PackBQuad(BQuad(a2, b2, c2, d2));
+BQuad Mul(const BQuad qA, const BQuad qB) {
+  __m128i a = PackBQuad(BQuad(qA.a, qA.b, qA.c, qA.d));
+  __m128i b = PackBQuad(BQuad(qB.a, qB.b, qB.c, qB.d));
   auto result = _mm_mul_epu32(a, b);
   return UnpackChar(result);
 }
 
-FQuad Mul(FLOATQUAD) {
-  __m128 a{a1, b1, c1, d1};
-  __m128 b{a2, b2, c2, d2};
+FQuad Mul(const FQuad qA, const FQuad qB) {
+  __m128 a{qA.a, qA.b, qA.c, qA.d};
+  __m128 b{qB.a, qB.b, qB.c, qB.d};
   auto result = _mm_mul_ps(a, b);
   return UnpackFloat(result);
 }
 
-DQuad Mul(DOUBLEQUAD) {
-  __m128d ax{a1, b1};
-  __m128d ay{c1, d1};
-  __m128d bx{a2, b2};
-  __m128d by{c2, d2};
+DQuad Mul(const DQuad qA, const DQuad qB) {
+  __m128d ax{qA.a, qA.b};
+  __m128d ay{qA.c, qA.d};
+  __m128d bx{qB.a, qB.b};
+  __m128d by{qB.c, qB.d};
   auto r1 = _mm_mul_pd(ax, bx);
   auto r2 = _mm_mul_pd(ay, by);
   return UnpackDouble(r1, r2);
 }
 
-BQuad Sub(BYTEQUAD) {
-  __m128i a = PackBQuad(BQuad(a1, b1, c1, d1));
-  __m128i b = PackBQuad(BQuad(a2, b2, c2, d2));
+BQuad Sub(const BQuad qA, const BQuad qB) {
+  __m128i a = PackBQuad(BQuad(qA.a, qA.b, qA.c, qA.d));
+  __m128i b = PackBQuad(BQuad(qB.a, qB.b, qB.c, qB.d));
   auto result = _mm_sub_epi16(a, b);
   return UnpackChar(result);
 }
 
-FQuad Sub(FLOATQUAD) {
-  __m128 a{a1, b1, c1, d1};
-  __m128 b{a2, b2, c2, d2};
+FQuad Sub(const FQuad qA, const FQuad qB) {
+  __m128 a{qA.a, qA.b, qA.c, qA.d};
+  __m128 b{qB.a, qB.b, qB.c, qB.d};
   auto result = _mm_sub_ps(a, b);
   return UnpackFloat(result);
 }
 
-DQuad Sub(DOUBLEQUAD) {
-  __m128d ax{a1, b1};
-  __m128d ay{c1, d1};
-  __m128d bx{a2, b2};
-  __m128d by{c2, d2};
+DQuad Sub(const DQuad qA, const DQuad qB) {
+  __m128d ax{qA.a, qA.b};
+  __m128d ay{qA.c, qA.d};
+  __m128d bx{qB.a, qB.b};
+  __m128d by{qB.c, qB.d};
   auto r1 = _mm_sub_pd(ax, bx);
   auto r2 = _mm_sub_pd(ay, by);
   return UnpackDouble(r1, r2);
 }
 
-BQuad Div(BYTEQUAD) {
+BQuad Div(const BQuad qA, const BQuad qB) {
   // This has to be done as floats, as integer division is unsupported
-  __m128 a{static_cast<float>(a1), static_cast<float>(b1),
-           static_cast<float>(c1), static_cast<float>(d1)};
-  __m128 b{static_cast<float>(a2), static_cast<float>(b2),
-           static_cast<float>(c2), static_cast<float>(d2)};
+  __m128 a{static_cast<float>(qA.a), static_cast<float>(qA.b),
+           static_cast<float>(qA.c), static_cast<float>(qA.d)};
+  __m128 b{static_cast<float>(qB.a), static_cast<float>(qB.b),
+           static_cast<float>(qB.c), static_cast<float>(qB.d)};
   auto result = _mm_div_ps(a, b);
   return UnpackChar(result);
 }
 
-FQuad Div(FLOATQUAD) {
-  __m128 a{a1, b1, c1, d1};
-  __m128 b{a2, b2, c2, d2};
+FQuad Div(const FQuad qA, const FQuad qB) {
+  __m128 a{qA.a, qA.b, qA.c, qA.d};
+  __m128 b{qB.a, qB.b, qB.c, qB.d};
   auto result = _mm_div_ps(a, b);
   return UnpackFloat(result);
 }
 
-DQuad Div(DOUBLEQUAD) {
-  __m128d ax{a1, b1};
-  __m128d ay{c1, d1};
-  __m128d bx{a2, b2};
-  __m128d by{c2, d2};
+DQuad Div(const DQuad qA, const DQuad qB) {
+  __m128d ax{qA.a, qA.b};
+  __m128d ay{qA.c, qA.d};
+  __m128d bx{qB.a, qB.b};
+  __m128d by{qB.c, qB.d};
   auto r1 = _mm_div_pd(ax, bx);
   auto r2 = _mm_div_pd(ay, by);
   return UnpackDouble(r1, r2);
 }
 
-BQuad Add(BQUADPAIR) {
-  __m128i a = PackBQuad(BQuad(qA[0], qA[1], qA[2], qA[3]));
-  __m128i b = PackBQuad(BQuad(qB[0], qB[1], qB[2], qB[3]));
-  auto result = _mm_adds_epu8(a, b);
-  return UnpackChar(result);
-}
-
-FQuad Add(FQUADPAIR) {
-  __m128 a{qA[0], qA[1], qA[2], qA[3]};
-  __m128 b{qB[0], qB[1], qB[2], qB[3]};
-  auto result = _mm_add_ps(a, b);
-  return UnpackFloat(result);
-}
-
-DQuad Add(DQUADPAIR) {
-  __m128d ax{qA[0], qA[1]};
-  __m128d ay{qA[2], qA[3]};
-  __m128d bx{qB[0], qB[1]};
-  __m128d by{qB[2], qB[3]};
-  auto r1 = _mm_add_pd(ax, bx);
-  auto r2 = _mm_add_pd(ay, by);
-  return UnpackDouble(r1, r2);
-}
-
-BQuad Mul(BQUADPAIR) {
-  __m128i a = PackBQuad(BQuad(qA[0], qA[1], qA[2], qA[3]));
-  __m128i b = PackBQuad(BQuad(qB[0], qB[1], qB[2], qB[3]));
-  auto result = _mm_mul_epu32(a, b);
-  return UnpackChar(result);
-}
-
-FQuad Mul(FQUADPAIR) {
-  __m128 a{qA[0], qA[1], qA[2], qA[3]};
-  __m128 b{qB[0], qB[1], qB[2], qB[3]};
-  auto result = _mm_mul_ps(a, b);
-  return UnpackFloat(result);
-}
-
-DQuad Mul(DQUADPAIR) {
-  __m128d ax{qA[0], qA[1]};
-  __m128d ay{qA[2], qA[3]};
-  __m128d bx{qB[0], qB[1]};
-  __m128d by{qB[2], qB[3]};
-  auto r1 = _mm_mul_pd(ax, bx);
-  auto r2 = _mm_mul_pd(ay, by);
-  return UnpackDouble(r1, r2);
-}
-
-BQuad Sub(BQUADPAIR) {
-  __m128i a = PackBQuad(BQuad(qA[0], qA[1], qA[2], qA[3]));
-  __m128i b = PackBQuad(BQuad(qB[0], qB[1], qB[2], qB[3]));
-  auto result = _mm_sub_epi16(a, b);
-  return UnpackChar(result);
-}
-
-FQuad Sub(FQUADPAIR) {
-  __m128 a{qA[0], qA[1], qA[2], qA[3]};
-  __m128 b{qB[0], qB[1], qB[2], qB[3]};
-  auto result = _mm_sub_ps(a, b);
-  return UnpackFloat(result);
-}
-
-DQuad Sub(DQUADPAIR) {
-  __m128d ax{qA[0], qA[1]};
-  __m128d ay{qA[2], qA[3]};
-  __m128d bx{qB[0], qB[1]};
-  __m128d by{qB[2], qB[3]};
-  auto r1 = _mm_sub_pd(ax, bx);
-  auto r2 = _mm_sub_pd(ay, by);
-  return UnpackDouble(r1, r2);
-}
-
-BQuad Div(BQUADPAIR) {
-  // This has to be done as floats, as integer division is unsupported
-  __m128 a{static_cast<float>(qA[0]), static_cast<float>(qA[1]),
-           static_cast<float>(qA[2]), static_cast<float>(qA[3])};
-  __m128 b{static_cast<float>(qB[0]), static_cast<float>(qB[1]),
-           static_cast<float>(qB[2]), static_cast<float>(qB[3])};
-  auto result = _mm_div_ps(a, b);
-  return UnpackChar(result);
-}
-
-FQuad Div(FQUADPAIR) {
-  __m128 a{qA[0], qA[1], qA[2], qA[3]};
-  __m128 b{qB[0], qB[1], qB[2], qB[3]};
-  auto result = _mm_div_ps(a, b);
-  return UnpackFloat(result);
-}
-
-DQuad Div(DQUADPAIR) {
-  __m128d ax{qA[0], qA[1]};
-  __m128d ay{qA[2], qA[3]};
-  __m128d bx{qB[0], qB[1]};
-  __m128d by{qB[2], qB[3]};
-  auto r1 = _mm_div_pd(ax, bx);
-  auto r2 = _mm_div_pd(ay, by);
-  return UnpackDouble(r1, r2);
-}
-
-} // namespace Pixel
-}
+} // namespace SIMD
+} // namespace ag

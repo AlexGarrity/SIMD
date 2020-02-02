@@ -23,5 +23,5 @@ AG_API FQuad2 Mul(FQuad2 a, FQuad2 b);
 AG_API FQuad2 Sub(FQuad2 a, FQuad2 b);
 AG_API FQuad2 Div(FQuad2 a, FQuad2 b);
 
-} // namespace Pixel
+} // namespace SIMD
 } // namespace ag

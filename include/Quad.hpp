@@ -30,24 +30,6 @@ template <typename T> struct AG_API Quad {
   Quad(Quad2<T> v);
   Quad(Quad4<T> v);
   Quad(Quad8<T> v);
-
-  const T operator[](const unsigned char index) const {
-    switch(index) {
-      case 0: return a;
-      case 1: return b;
-      case 2: return c;
-    }
-    return d;
-  }
-
-  T &operator[](const unsigned char index) {
-    switch(index) {
-      case 0: return a;
-      case 1: return b;
-      case 2: return c;
-    }
-    return d;
-  }
 };
 
 template <typename T> struct AG_API Quad2 {
@@ -68,12 +50,10 @@ template <typename T> struct AG_API Quad4 {
   Quad4() = default;
   Quad4(T v) : a{v}, b{v} {}
 
-  Quad4(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d) 
-  : a{a}, b{b}, c{c}, d{d} {}
+  Quad4(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d) : a{a}, b{b}, c{c}, d{d} {}
 
-  Quad4(Quad2<T> a, Quad2<T> b) 
-  : a{a.a}, b{a.b}, c{b.a}, d{b.b} {}
-  
+  Quad4(Quad2<T> a, Quad2<T> b) : a{a.a}, b{a.b}, c{b.a}, d{b.b} {}
+
   Quad4(Quad8<T> v);
 };
 
@@ -87,12 +67,11 @@ template <typename T> struct AG_API Quad8 {
         Quad<T> g, Quad<T> h)
       : a{a}, b{b}, c{c}, d{d}, e{e}, f{f}, g{g}, h{h} {}
 
-  Quad8(Quad2<T> a, Quad2<T> b, Quad2<T> c, Quad2<T> d) 
-  : a{a.a}, b{a.b}, c{b.a}, d{b.b}, e{c.a}, f{c.b}, g{d.a}, h{d.b} {}
+  Quad8(Quad2<T> a, Quad2<T> b, Quad2<T> c, Quad2<T> d)
+      : a{a.a}, b{a.b}, c{b.a}, d{b.b}, e{c.a}, f{c.b}, g{d.a}, h{d.b} {}
 
-  Quad8(Quad4<T> a, Quad4<T> b) 
-  : a{a.a}, b{a.b}, c{a.c}, d{a.d}, e{b.a}, f{b.b}, g{b.c}, h{b.d} {}
-
+  Quad8(Quad4<T> a, Quad4<T> b)
+      : a{a.a}, b{a.b}, c{a.c}, d{a.d}, e{b.a}, f{b.b}, g{b.c}, h{b.d} {}
 };
 
 // Narrowing constructors
@@ -106,7 +85,8 @@ template <typename T> AG_API Quad2<T>::Quad2(Quad4<T> v) : Quad2(v.a, v.b) {}
 template <typename T> AG_API Quad2<T>::Quad2(Quad8<T> v) : Quad2(v.a, v.b) {}
 
 // Quad8 to Quad4
-template <typename T> AG_API Quad4<T>::Quad4(Quad8<T> v) : Quad4(v.a, v.b, v.c, v.d) {}
+template <typename T>
+AG_API Quad4<T>::Quad4(Quad8<T> v) : Quad4(v.a, v.b, v.c, v.d) {}
 
 #define BYTE uint8_t
 #define SHORT int16_t
@@ -127,5 +107,5 @@ using SQuad4 = Quad4<SHORT>;
 
 using BQuad8 = Quad8<BYTE>;
 
-} // namespace Pixel
+} // namespace SIMD
 } // namespace ag

@@ -1,6 +1,7 @@
 #include "Math/Math.hpp"
 
 #include "Math.hpp"
+#include "Quad.hpp"
 
 namespace ag {
 namespace SIMD {
@@ -10,115 +11,75 @@ namespace SIMD {
 // Some templated helpers to save space
 template <typename T>
 Quad<T> Add(T a1, T a2, T b1, T b2, T c1, T c2, T d1, T d2) {
-  Quad<T> out;
-  out[0] = a1 + a1;
-  out[1] = b1 + b2;
-  out[2] = c1 + c2;
-  out[3] = d1 + d2;
-  return out;
+  return {static_cast<T>(a1 + a2), static_cast<T>(b1 + b2),
+          static_cast<T>(c1 + c2), static_cast<T>(d1 + d2)};
 }
 
 template <typename T>
 Quad<T> Mul(T a1, T a2, T b1, T b2, T c1, T c2, T d1, T d2) {
-  Quad<T> out;
-  out[0] = a1 * a1;
-  out[1] = b1 * b2;
-  out[2] = c1 * c2;
-  out[3] = d1 * d2;
-  return out;
+  return {static_cast<T>(a1 * a2), static_cast<T>(b1 * b2),
+          static_cast<T>(c1 * c2), static_cast<T>(d1 * d2)};
 }
 
 template <typename T>
 Quad<T> Sub(T a1, T a2, T b1, T b2, T c1, T c2, T d1, T d2) {
-  Quad<T> out;
-  out[0] = a1 - a1;
-  out[1] = b1 - b2;
-  out[2] = c1 - c2;
-  out[3] = d1 - d2;
-  return out;
+  return {static_cast<T>(a1 - a2), static_cast<T>(b1 - b2),
+          static_cast<T>(c1 - c2), static_cast<T>(d1 - d2)};
 }
 
 template <typename T>
 Quad<T> Div(T a1, T a2, T b1, T b2, T c1, T c2, T d1, T d2) {
-  Quad<T> out;
-  out[0] = a1 / a1;
-  out[1] = b1 / b2;
-  out[2] = c1 / c2;
-  out[3] = d1 / d2;
-  return out;
+  return {static_cast<T>(a1 / a2), static_cast<T>(b1 / b2),
+          static_cast<T>(c1 / c2), static_cast<T>(d1 / d2)};
 }
 
-BQuad Add(BYTEQUAD) { return Add<BYTE>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-FQuad Add(FLOATQUAD) { return Add<float>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-DQuad Add(DOUBLEQUAD) { return Add<double>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-BQuad Mul(BYTEQUAD) { return Mul<BYTE>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-FQuad Mul(FLOATQUAD) { return Mul<float>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-DQuad Mul(DOUBLEQUAD) { return Mul<double>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-BQuad Sub(BYTEQUAD) { return Sub<BYTE>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-FQuad Sub(FLOATQUAD) { return Sub<float>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-DQuad Sub(DOUBLEQUAD) { return Sub<double>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-BQuad Div(BYTEQUAD) { return Div<BYTE>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-FQuad Div(FLOATQUAD) { return Div<float>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-DQuad Div(DOUBLEQUAD) { return Div<double>(a1, a2, b1, b2, c1, c2, d1, d2); }
-
-BQuad Add(BQUADPAIR) {
-  return Add<BYTE>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+BQuad Add(const BQuad qA, const BQuad qB) {
+  return Add<BYTE>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-FQuad Add(FQUADPAIR) {
-  return Add<float>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+FQuad Add(const FQuad qA, const FQuad qB) {
+  return Add<float>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-DQuad Add(DQUADPAIR) {
-  return Add<double>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+DQuad Add(const DQuad qA, const DQuad qB) {
+  return Add<double>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-BQuad Mul(BQUADPAIR) {
-  return Mul<BYTE>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+BQuad Mul(const BQuad qA, const BQuad qB) {
+  return Mul<BYTE>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-FQuad Mul(FQUADPAIR) {
-  return Mul<float>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+FQuad Mul(const FQuad qA, const FQuad qB) {
+  return Mul<float>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-DQuad Mul(DQUADPAIR) {
-  return Mul<double>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+DQuad Mul(const DQuad qA, const DQuad qB) {
+  return Mul<double>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-BQuad Sub(BQUADPAIR) {
-  return Sub<BYTE>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+BQuad Sub(const BQuad qA, const BQuad qB) {
+  return Sub<BYTE>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-FQuad Sub(FQUADPAIR) {
-  return Sub<float>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+FQuad Sub(const FQuad qA, const FQuad qB) {
+  return Sub<float>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-DQuad Sub(DQUADPAIR) {
-  return Sub<double>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+DQuad Sub(const DQuad qA, const DQuad qB) {
+  return Sub<double>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-BQuad Div(BQUADPAIR) {
-  return Div<BYTE>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+BQuad Div(const BQuad qA, const BQuad qB) {
+  return Div<BYTE>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-FQuad Div(FQUADPAIR) {
-  return Div<float>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+FQuad Div(const FQuad qA, const FQuad qB) {
+  return Div<float>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-DQuad Div(DQUADPAIR) {
-  return Div<double>(qA[0], qB[0], qA[1], qB[1], qA[2], qB[2], qA[3], qB[3]);
+DQuad Div(const DQuad qA, const DQuad qB) {
+  return Div<double>(qA.a, qB.a, qA.b, qB.b, qA.c, qB.c, qA.d, qB.d);
 }
 
-} // namespace Pixel
+} // namespace SIMD
 } // namespace ag
