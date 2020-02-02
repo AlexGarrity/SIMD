@@ -11,13 +11,20 @@ configure_file("${CMAKE_SOURCE_DIR}/cmake/Core.hpp.in" "${CMAKE_SOURCE_DIR}/incl
 set(CMAKE_BUILD_TYPE "Release")
 set(BUILD_agSIMD TRUE CACHE BOOL "Build the library")
 set(BUILD_SHARED_LIBS TRUE CACHE BOOL "Build the library shared (true) or static (false)")
-set(RUN_UNIT_TESTS FALSE CACHE BOOL "Run unit tests to check that the library works")
-set(DISABLE_SSE FALSE CACHE BOOL "Force compilation not to use SSE extensions")
-set(DISABLE_AVX FALSE CACHE BOOL "Force compilation not to use AVX extensions")
+set(TEST_MATH FALSE CACHE BOOL "Run unit tests to check that the math component works")
+set(TEST_MATH_PACKED FALSE CACHE BOOL "Run unit tests to check that the packed math component works")
+set(EXTENSION_DISABLE_SSE2 FALSE CACHE BOOL "Force compilation not to use SSE2+ extensions")
+set(EXTENSION_DISABLE_SSE4 FALSE CACHE BOOL "Force compilation not to use SSE4+ extensions")
+set(EXTENSION_DISABLE_AVX2 FALSE CACHE BOOL "Force compilation not to use AVX2+ extensions")
+set(EXTENSION_RESET_CHECKS FALSE CACHE BOOL "Reset the extension checks")
 
-if (${RUN_UNIT_TESTS})
+if (${TEST_MATH})
     set(CMAKE_BUILD_TYPE "Debug")
-    include(${CMAKE_SOURCE_DIR}/cmake/UnitTests.cmake)
+    include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsMath.cmake)
+endif()
+if (${TEST_MATH_PACKED})
+    set(CMAKE_BUILD_TYPE "Debug")
+    include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsPacked.cmake)
 endif()
 
 if(${BUILD_agSIMD})
@@ -36,25 +43,43 @@ set(SOURCE
     ${CMAKE_SOURCE_DIR}/src/PackedMath.cpp
 )
 
-# Check if we have either SSE2 or AVX2
-set(HAS_AVX2 -1)
-set(HAS_SSE2 -1)
-
 # AVX2 Check goes here
 include(${CMAKE_SOURCE_DIR}/cmake/TestAVX2.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/TestSSE2.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/TestSSE4.cmake)
 
-# Check which extensions we have...
-TestSSE2()
-TestAVX2()
-
-if ("${DISABLE_SSE}" STREQUAL "ON")
-    message(NOTICE "We're forcing the compiler not to use SSE")
-    set(HAS_SSE2 -1)
+# Are we resetting the checks and doing them again?
+if (${EXTENSION_RESET_CHECKS})
+    unset(HAS_AVX2 CACHE)
+    unset(HAS_SSE4 CACHE)
+    unset(HAS_SSE2 CACHE)
 endif()
-if("${DISABLE_AVX}" STREQUAL "ON")
-    message(NOTICE "We're forcing the compiler not to use AVX")
+
+# Check which extensions we have, if we need to
+if (NOT DEFINED CACHE{HAS_AVX2})
+    TestAVX2()
+endif()
+if (NOT DEFINED CACHE{HAS_SSE4})
+    TestSSE4()
+endif()
+if (NOT DEFINED CACHE{HAS_SSE2})
+    TestSSE2()
+endif()
+
+if("${EXTENSION_DISABLE_AVX2}" STREQUAL "ON")
+    message(NOTICE "We're forcing the compiler not to use AVX2+")
     set(HAS_AVX2 -1)
+endif()
+if ("${EXTENSION_DISABLE_SSE4}" STREQUAL "ON")
+    message(NOTICE "We're forcing the compiler not to use SSE4+")
+    set(HAS_AVX2 -1)
+    set(HAS_SSE4 -1)
+endif()
+if ("${EXTENSION_DISABLE_SSE2}" STREQUAL "ON")
+    message(NOTICE "We're forcing the compiler not to use SSE2+")
+    set(HAS_AVX2 -1)
+    set(HAS_SSE4 -1)
+    set(HAS_SSE2 -1)
 endif()
 
 # Try AVX2 first because we prefer to use this over SSE
@@ -71,8 +96,22 @@ if("${HAS_AVX2}" STREQUAL "0")
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "ENABLE_EXTENSIONS" "FOUND_AVX2")
     set(EXTRA_COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS} ${AVX2_FLAG})
 
+elseif("${HAS_SSE4}" STREQUAL "0")
+    # No AVX2, so we'll instead see if we can use SSE4
+    message(NOTICE "CPU supports SSE4, enabling SSE4 maths")
+    # Enable the AVX versions of Math and PackedMath
+    set(MATH_SOURCE
+        ${CMAKE_SOURCE_DIR}/src/Math/MathSSE.cpp
+    )
+    set(PACKED_MATH_SOURCE
+        ${CMAKE_SOURCE_DIR}/src/Math/PackedMathSSE.cpp
+    )
+    # Define the stuff we need to turn extensions on
+    set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "ENABLE_EXTENSIONS" "FOUND_SSE2")
+    set(EXTRA_COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS} ${SSE4_FLAG})
+
 elseif("${HAS_SSE2}" STREQUAL "0")
-    # No AVX2, so we'll instead see if we can use SSE2
+    # No SSE4, so we'll instead see if we can use SSE2
     message(NOTICE "CPU supports SSE2, enabling SSE2 maths")
     # Enable the AVX versions of Math and PackedMath
     set(MATH_SOURCE

@@ -6,10 +6,10 @@ enable_testing()
 find_package(GTest REQUIRED)
 find_package(agSIMD REQUIRED)
 
-set (TEST_NAME ${PROJECT_NAME}Test)
+set (TEST_NAME ${PROJECT_NAME}TestPacked)
 
 file(GLOB_RECURSE TEST_SRC
-    ${CMAKE_SOURCE_DIR}/test/TestMath.cpp
+    ${CMAKE_SOURCE_DIR}/test/TestPacked.cpp
 )
 
 

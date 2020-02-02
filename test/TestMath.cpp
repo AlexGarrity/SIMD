@@ -3,11 +3,13 @@
 #include "../include/Math.hpp"
 #include <gtest/gtest.h>
 
-TEST(T_BYTE, ADD) {
-  ag::SIMD::BQuad q1(0, 2, 39, 8);
-  ag::SIMD::BQuad q2(16, 32, 64, 128);
+using namespace ag::SIMD;
 
-  auto r = ag::SIMD::Add(q1, q2);
+TEST(T_BYTE, ADD) {
+  BQuad q1(0, 2, 39, 8);
+  BQuad q2(16, 32, 64, 128);
+
+  auto r = Add(q1, q2);
 
   ASSERT_EQ(q1.a + q2.a, r.a);
   ASSERT_EQ(q1.b + q2.b, r.b);
@@ -16,10 +18,10 @@ TEST(T_BYTE, ADD) {
 }
 
 TEST(T_BYTE, SUB) {
-  ag::SIMD::BQuad q1(16, 39, 4, 128);
-  ag::SIMD::BQuad q2(1, 2, 4, 0);
+  BQuad q1(16, 39, 4, 128);
+  BQuad q2(1, 2, 4, 0);
 
-  auto r = ag::SIMD::Sub(q1, q2);
+  auto r = Sub(q1, q2);
 
   ASSERT_EQ(q1.a - q2.a, r.a);
   ASSERT_EQ(q1.b - q2.b, r.b);
@@ -28,10 +30,10 @@ TEST(T_BYTE, SUB) {
 }
 
 TEST(T_BYTE, MUL) {
-  ag::SIMD::BQuad q1(9, 3, 2, 1);
-  ag::SIMD::BQuad q2(1, 2, 4, 8);
+  BQuad q1(9, 3, 2, 1);
+  BQuad q2(1, 2, 4, 8);
 
-  auto r = ag::SIMD::Mul(q1, q2);
+  auto r = Mul(q1, q2);
 
 
   ASSERT_EQ(q1.a * q2.a, r.a); // 64
@@ -41,10 +43,10 @@ TEST(T_BYTE, MUL) {
 }
 
 TEST(T_BYTE, DIV) {
-  ag::SIMD::BQuad q1(16, 32, 64, 128);
-  ag::SIMD::BQuad q2(1, 2, 18, 7);
+  BQuad q1(16, 32, 64, 128);
+  BQuad q2(1, 2, 18, 7);
 
-  auto r = ag::SIMD::Div(q1, q2);
+  auto r = Div(q1, q2);
 
   ASSERT_EQ(q1.a / q2.a, r.a); // /0
   ASSERT_EQ(q1.b / q2.b, r.b); // 205
@@ -53,10 +55,10 @@ TEST(T_BYTE, DIV) {
 }
 
 TEST(T_FLOAT, ADD) {
-  ag::SIMD::FQuad q1(1.0, 2.0, 4.0, 8.0);
-  ag::SIMD::FQuad q2(16.0, 32.0, 64.0, 128.0);
+  FQuad q1(1.0, 2.0, 4.0, 8.0);
+  FQuad q2(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Add(q1, q2);
+  auto r = Add(q1, q2);
 
   ASSERT_FLOAT_EQ(q1.a + q2.a, r.a);
   ASSERT_FLOAT_EQ(q1.b + q2.b, r.b);
@@ -65,10 +67,10 @@ TEST(T_FLOAT, ADD) {
 }
 
 TEST(T_FLOAT, SUB) {
-  ag::SIMD::FQuad q2(1.0, 2.0, 4.0, 8.0);
-  ag::SIMD::FQuad q1(16.0, 32.0, 64.0, 128.0);
+  FQuad q2(1.0, 2.0, 4.0, 8.0);
+  FQuad q1(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Sub(q1, q2);
+  auto r = Sub(q1, q2);
 
   ASSERT_FLOAT_EQ(q1.a - q2.a, r.a);
   ASSERT_FLOAT_EQ(q1.b - q2.b, r.b);
@@ -77,10 +79,10 @@ TEST(T_FLOAT, SUB) {
 }
 
 TEST(T_FLOAT, MUL) {
-  ag::SIMD::FQuad q1(8.0, 4.0, 2.0, 1.0);
-  ag::SIMD::FQuad q2(16.0, 32.0, 64.0, 128.0);
+  FQuad q1(8.0, 4.0, 2.0, 1.0);
+  FQuad q2(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Mul(q1, q2);
+  auto r = Mul(q1, q2);
 
   ASSERT_FLOAT_EQ(q1.a * q2.a, r.a);
   ASSERT_FLOAT_EQ(q1.b * q2.b, r.b);
@@ -89,10 +91,10 @@ TEST(T_FLOAT, MUL) {
 }
 
 TEST(T_FLOAT, DIV) {
-  ag::SIMD::FQuad q2(1, 2, 4, 8);
-  ag::SIMD::FQuad q1(16, 32, 64, 128);
+  FQuad q2(1, 2, 4, 8);
+  FQuad q1(16, 32, 64, 128);
 
-  auto r = ag::SIMD::Div(q1, q2);
+  auto r = Div(q1, q2);
 
   ASSERT_FLOAT_EQ(q1.a / q2.a, r.a);
   ASSERT_FLOAT_EQ(q1.b / q2.b, r.b);
@@ -101,10 +103,10 @@ TEST(T_FLOAT, DIV) {
 }
 
 TEST(T_DOUBLE, ADD) {
-  ag::SIMD::DQuad q1(1.0, 2.0, 4.0, 8.0);
-  ag::SIMD::DQuad q2(16.0, 32.0, 64.0, 128.0);
+  DQuad q1(1.0, 2.0, 4.0, 8.0);
+  DQuad q2(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Add(q1, q2);
+  auto r = Add(q1, q2);
 
   ASSERT_DOUBLE_EQ(q1.a + q2.a, r.a);
   ASSERT_DOUBLE_EQ(q1.b + q2.b, r.b);
@@ -113,10 +115,10 @@ TEST(T_DOUBLE, ADD) {
 }
 
 TEST(T_DOUBLE, SUB) {
-  ag::SIMD::DQuad q2(1.0, 2.0, 4.0, 8.0);
-  ag::SIMD::DQuad q1(16.0, 32.0, 64.0, 128.0);
+  DQuad q2(1.0, 2.0, 4.0, 8.0);
+  DQuad q1(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Sub(q1, q2);
+  auto r = Sub(q1, q2);
 
   ASSERT_DOUBLE_EQ(q1.a - q2.a, r.a);
   ASSERT_DOUBLE_EQ(q1.b - q2.b, r.b);
@@ -125,10 +127,10 @@ TEST(T_DOUBLE, SUB) {
 }
 
 TEST(T_DOUBLE, MUL) {
-  ag::SIMD::DQuad q1(8.0, 4.0, 2.0, 1.0);
-  ag::SIMD::DQuad q2(16.0, 32.0, 64.0, 128.0);
+  DQuad q1(8.0, 4.0, 2.0, 1.0);
+  DQuad q2(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Mul(q1, q2);
+  auto r = Mul(q1, q2);
 
   ASSERT_DOUBLE_EQ(q1.a * q2.a, r.a);
   ASSERT_DOUBLE_EQ(q1.b * q2.b, r.b);
@@ -137,10 +139,10 @@ TEST(T_DOUBLE, MUL) {
 }
 
 TEST(T_DOUBLE, DIV) {
-  ag::SIMD::DQuad q2(1.0, 2.0, 4.0, 8.0);
-  ag::SIMD::DQuad q1(16.0, 32.0, 64.0, 128.0);
+  DQuad q2(1.0, 2.0, 4.0, 8.0);
+  DQuad q1(16.0, 32.0, 64.0, 128.0);
 
-  auto r = ag::SIMD::Div(q1, q2);
+  auto r = Div(q1, q2);
 
   ASSERT_DOUBLE_EQ(q1.a / q2.a, r.a);
   ASSERT_DOUBLE_EQ(q1.b / q2.b, r.b);

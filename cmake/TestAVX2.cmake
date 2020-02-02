@@ -18,10 +18,12 @@ function(TestAVX2)
 
     try_run(
         EXIT_CODE COMPILE_CODE ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/AVX2.cpp
-        COMPILE_DEFINITIONS -mavx2
+        COMPILE_DEFINITIONS ${EXTENSION_FLAG}
     )
 
     message(DEBUG "AVX2 support returned ${EXIT_CODE}")
     set(AVX2_FLAG ${EXTENSION_FLAG} PARENT_SCOPE)
-    set(HAS_AVX2 ${EXIT_CODE} PARENT_SCOPE)
+    set(HAS_AVX2 ${EXIT_CODE} CACHE INTERNAL "Does the system has AVX2?" FORCE)
+    set(HAS_SSE4 ${EXIT_CODE} CACHE INTERNAL "Does the system has SSE4?" FORCE)
+    set(HAS_SSE2 ${EXIT_CODE} CACHE INTERNAL "Does the system has SSE2?" FORCE)
 endfunction()
