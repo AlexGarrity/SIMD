@@ -5,101 +5,109 @@
 namespace ag {
 namespace SIMD {
 
-BQuad4 Add(BQuad4 a, BQuad4 b) {
-  BQuad4 out;
-  out.a = Add(a.a, b.a);
-  out.b = Add(a.b, b.b);
-  out.c = Add(a.c, b.c);
-  out.d = Add(a.d, b.d);
+BQuad4 Add(const BQuad4 a, const BQuad4 b) {
+  BQuad4 out {0};
+  out.qA = Add(a.qA, b.qA);
+  out.qB = Add(a.qB, b.qB);
+  out.qC = Add(a.qC, b.qC);
+  out.qD = Add(a.qD, b.qD);
   return out;
 }
 
-BQuad4 Mul(BQuad4 a, BQuad4 b) {
-  BQuad4 out;
-  out.a = Mul(a.a, b.a);
-  out.b = Mul(a.b, b.b);
-  out.c = Mul(a.c, b.c);
-  out.d = Mul(a.d, b.d);
+BQuad4 Mul(const BQuad4 a, const BQuad4 b) {
+  BQuad4 out {0};
+  out.qA = Mul(a.qA, b.qA);
+  out.qB = Mul(a.qB, b.qB);
+  out.qC = Mul(a.qC, b.qC);
+  out.qD = Mul(a.qD, b.qD);
   return out;
 }
 
-BQuad4 Sub(BQuad4 a, BQuad4 b) {
-  BQuad4 out;
-  out.a = Sub(a.a, b.a);
-  out.b = Sub(a.b, b.b);
-  out.c = Sub(a.c, b.c);
-  out.d = Sub(a.d, b.d);
+BQuad4 Sub(const BQuad4 a, const BQuad4 b) {
+  BQuad4 out {0};
+  out.qA = Sub(a.qA, b.qA);
+  out.qB = Sub(a.qB, b.qB);
+  out.qC = Sub(a.qC, b.qC);
+  out.qD = Sub(a.qD, b.qD);
   return out;
 }
 
-BQuad4 Div(BQuad4 a, BQuad4 b) {
-  BQuad4 out;
-  out.a = Div(a.a, b.a);
-  out.b = Div(a.b, b.b);
-  out.c = Div(a.c, b.c);
-  out.d = Div(a.d, b.d);
+BQuad4 Div(const BQuad4 a, const BQuad4 b) {
+  BQuad8 out {0};
+  out.qA = Div(a.qA, b.qA);
+  out.qB = Div(a.qB, b.qB);
+  out.qC = Div(a.qC, b.qC);
+  out.qD = Div(a.qD, b.qD);
   return out;
 }
 
-BQuad8 Add(BQuad8 a, BQuad8 b) {
-  BQuad8 out;
-  out.a = Add(a.a, b.a);
-  out.b = Add(a.b, b.b);
-  out.c = Add(a.c, b.c);
-  out.d = Add(a.d, b.d);
-  out.e = Add(a.e, b.e);
-  out.f = Add(a.f, b.f);
-  out.g = Add(a.g, b.g);
-  out.h = Add(a.h, b.h);
+BQuad8 Add(const BQuad8 a, const BQuad8 b) {
+  BQuad8 out {0};
+  out.qA = Add(a.qA, b.qA);
+  out.qB = Add(a.qB, b.qB);
+  out.qC = Add(a.qC, b.qC);
+  out.qD = Add(a.qD, b.qD);
+  out.qE = Add(a.qE, b.qE);
+  out.qF = Add(a.qF, b.qF);
+  out.qG = Add(a.qG, b.qG);
+  out.qH = Add(a.qH, b.qH);
   return out;
 }
 
-BQuad8 Mul(BQuad8 a, BQuad8 b) {
-  BQuad8 out;
-  out.a = Mul(a.a, b.a);
-  out.b = Mul(a.b, b.b);
-  out.c = Mul(a.c, b.c);
-  out.d = Mul(a.d, b.d);
-  out.e = Mul(a.e, b.e);
-  out.f = Mul(a.f, b.f);
-  out.g = Mul(a.g, b.g);
-  out.h = Mul(a.h, b.h);
+BQuad8 Mul(const BQuad8 a, const BQuad8 b) {
+  BQuad8 out {0};
+  out.qA = Mul(a.qA, b.qA);
+  out.qB = Mul(a.qB, b.qB);
+  out.qC = Mul(a.qC, b.qC);
+  out.qD = Mul(a.qD, b.qD);
+  out.qE = Mul(a.qE, b.qE);
+  out.qF = Mul(a.qF, b.qF);
+  out.qG = Mul(a.qG, b.qG);
+  out.qH = Mul(a.qH, b.qH);
   return out;
 }
 
-BQuad8 Sub(BQuad8 a, BQuad8 b) {
-  BQuad8 out;
-  out.a = Sub(a.a, b.a);
-  out.b = Sub(a.b, b.b);
-  out.c = Sub(a.c, b.c);
-  out.d = Sub(a.d, b.d);
-  out.e = Sub(a.e, b.e);
-  out.f = Sub(a.f, b.f);
-  out.g = Sub(a.g, b.g);
-  out.h = Sub(a.h, b.h);
+BQuad8 Sub(const BQuad8 a, const BQuad8 b) {
+  BQuad8 out {0};
+  out.qA = Sub(a.qA, b.qA);
+  out.qB = Sub(a.qB, b.qB);
+  out.qC = Sub(a.qC, b.qC);
+  out.qD = Sub(a.qD, b.qD);
+  out.qE = Sub(a.qE, b.qE);
+  out.qF = Sub(a.qF, b.qF);
+  out.qG = Sub(a.qG, b.qG);
+  out.qH = Sub(a.qH, b.qH);
   return out;
 }
 
-BQuad8 Div(BQuad8 a, BQuad8 b) {
-  BQuad8 out;
-  out.a = Div(a.a, b.a);
-  out.b = Div(a.b, b.b);
-  out.c = Div(a.c, b.c);
-  out.d = Div(a.d, b.d);
-  out.e = Div(a.e, b.e);
-  out.f = Div(a.f, b.f);
-  out.g = Div(a.g, b.g);
-  out.h = Div(a.h, b.h);
+BQuad8 Div(const BQuad8 a, const BQuad8 b) {
+  BQuad8 out {0};
+  out.qA = Div(a.qA, b.qA);
+  out.qB = Div(a.qB, b.qB);
+  out.qC = Div(a.qC, b.qC);
+  out.qD = Div(a.qD, b.qD);
+  out.qE = Div(a.qE, b.qE);
+  out.qF = Div(a.qF, b.qF);
+  out.qG = Div(a.qG, b.qG);
+  out.qH = Div(a.qH, b.qH);
   return out;
 }
 
-FQuad2 Add(FQuad2 a, FQuad2 b) { return {Add(a.a, b.a), Add(a.b, b.b)}; }
+FQuad2 Add(const FQuad2 a, const FQuad2 b) {
+  return {Add(a.qA, b.qA), Add(a.qB, b.qB)};
+}
 
-FQuad2 Mul(FQuad2 a, FQuad2 b) { return {Mul(a.a, b.a), Mul(a.b, b.b)}; }
+FQuad2 Mul(const FQuad2 a, const FQuad2 b) {
+  return {Mul(a.qA, b.qA), Mul(a.qB, b.qB)};
+}
 
-FQuad2 Sub(FQuad2 a, FQuad2 b) { return {Sub(a.a, b.a), Sub(a.b, b.b)}; }
+FQuad2 Sub(const FQuad2 a, const FQuad2 b) {
+  return {Sub(a.qA, b.qA), Sub(a.qB, b.qB)};
+}
 
-FQuad2 Div(FQuad2 a, FQuad2 b) { return {Div(a.a, b.a), Div(a.b, b.b)}; }
+FQuad2 Div(const FQuad2 a, const FQuad2 b) {
+  return {Div(a.qA, b.qA), Div(a.qB, b.qB)};
+}
 
 } // namespace SIMD
 } // namespace ag

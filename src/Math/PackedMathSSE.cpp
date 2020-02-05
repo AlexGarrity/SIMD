@@ -7,6 +7,9 @@
 namespace ag {
 namespace SIMD {
 
+// Conversion macros
+using namespace internal;
+
 /*
     Indexes are in bytes, rather than bits
 
@@ -29,9 +32,9 @@ inline BQuad WordToBQuad(WORD v) {
 }
 
 inline DWORD BQuad2ToDword(BQuad2 v) {
-  return (DWORD(v.a.a) | DWORD(v.a.b) << 8 | DWORD(v.a.c) << 16 |
-          DWORD(v.a.d) << 24 | DWORD(v.a.a) << 32 | DWORD(v.a.b) << 40 |
-          DWORD(v.a.c) << 48 | DWORD(v.a.d) << 56);
+  return (DWORD(v.qA.a) | DWORD(v.qA.b) << 8 | DWORD(v.qA.c) << 16 |
+          DWORD(v.qA.d) << 24 | DWORD(v.qB.a) << 32 | DWORD(v.qB.b) << 40 |
+          DWORD(v.qB.c) << 48 | DWORD(v.qB.d) << 56);
 }
 
 inline BQuad2 DwordToBQuad2(DWORD v) {
@@ -62,15 +65,15 @@ inline BQuad4 M128ToBQuad4(__m128i v) {
 
 __m128i BQuad4ToM128(BQuad4 v) {
   __m128i out;
-  out[0] = D(BQuadToWord(v.a)) | D(BQuadToWord(v.b)) << 32;
-  out[1] = D(BQuadToWord(v.c)) | D(BQuadToWord(v.d)) << 32;
+  out[0] = D(BQuadToWord(v.qA)) | D(BQuadToWord(v.qB)) << 32;
+  out[1] = D(BQuadToWord(v.qC)) | D(BQuadToWord(v.qD)) << 32;
   return out;
 }
 
 inline __m128i SQuad2ToM128(SQuad2 v) {
   return {
-      iD(SQuadToDword(v.a)),
-      iD(SQuadToDword(v.b)),
+      iD(SQuadToDword(v.qA)),
+      iD(SQuadToDword(v.qB)),
   };
 }
 
@@ -93,10 +96,10 @@ BQuad4 Sub(BQuad4 a, BQuad4 b) {
 }
 
 BQuad4 Mul(BQuad4 a, BQuad4 b) {
-  auto s1 = SQuad2(BQuadToSQuad(a.a), BQuadToSQuad(a.b));
-  auto s2 = SQuad2(BQuadToSQuad(a.c), BQuadToSQuad(a.d));
-  auto s3 = SQuad2(BQuadToSQuad(b.a), BQuadToSQuad(b.b));
-  auto s4 = SQuad2(BQuadToSQuad(b.c), BQuadToSQuad(b.d));
+  auto s1 = SQuad2(BQuadToSQuad(a.qA), BQuadToSQuad(a.qB));
+  auto s2 = SQuad2(BQuadToSQuad(a.qC), BQuadToSQuad(a.qD));
+  auto s3 = SQuad2(BQuadToSQuad(b.qA), BQuadToSQuad(b.qB));
+  auto s4 = SQuad2(BQuadToSQuad(b.qC), BQuadToSQuad(b.qD));
 
   auto m1 = SQuad2ToM128(s1);
   auto m2 = SQuad2ToM128(s2);
@@ -109,23 +112,23 @@ BQuad4 Mul(BQuad4 a, BQuad4 b) {
   auto rs1 = M128ToSQuad2(r1);
   auto rs2 = M128ToSQuad2(r2);
 
-  return {SQuadToBQuad(rs1.a), SQuadToBQuad(rs1.b), SQuadToBQuad(rs2.a),
-          SQuadToBQuad(rs2.b)};
+  return {SQuadToBQuad(rs1.qA), SQuadToBQuad(rs1.qB), SQuadToBQuad(rs2.qA),
+          SQuadToBQuad(rs2.qB)};
 }
 
 BQuad4 Div(BQuad4 a, BQuad4 b) {
-  auto r1 = Div(a.a, b.a);
-  auto r2 = Div(a.b, b.b);
-  auto r3 = Div(a.c, b.c);
-  auto r4 = Div(a.d, b.d);
+  auto r1 = Div(a.qA, b.qA);
+  auto r2 = Div(a.qB, b.qB);
+  auto r3 = Div(a.qC, b.qC);
+  auto r4 = Div(a.qD, b.qD);
   return {r1, r2, r4, r4};
 }
 
 BQuad8 Add(BQuad8 a, BQuad8 b) {
-  BQuad4 aa{a.a, a.b, a.c, a.d};
-  BQuad4 ab{a.e, a.f, a.g, a.h};
-  BQuad4 ba{b.a, b.b, b.c, b.d};
-  BQuad4 bb{b.e, b.f, b.g, b.h};
+  BQuad4 aa{a.qA, a.qB, a.qC, a.qD};
+  BQuad4 ab{a.qE, a.qF, a.qG, a.qH};
+  BQuad4 ba{b.qA, b.qB, b.qC, b.qD};
+  BQuad4 bb{b.qE, b.qF, b.qG, b.qH};
 
   auto r1 = _mm_adds_epu8(BQuad4ToM128(aa), BQuad4ToM128(ba));
   auto r2 = _mm_adds_epu8(BQuad4ToM128(ba), BQuad4ToM128(bb));
@@ -133,10 +136,10 @@ BQuad8 Add(BQuad8 a, BQuad8 b) {
 }
 
 BQuad8 Sub(BQuad8 a, BQuad8 b) {
-  BQuad4 aa{a.a, a.b, a.c, a.d};
-  BQuad4 ab{a.e, a.f, a.g, a.h};
-  BQuad4 ba{b.a, b.b, b.c, b.d};
-  BQuad4 bb{b.e, b.f, b.g, b.h};
+  BQuad4 aa{a.qA, a.qB, a.qC, a.qD};
+  BQuad4 ab{a.qE, a.qF, a.qG, a.qH};
+  BQuad4 ba{b.qA, b.qB, b.qC, b.qD};
+  BQuad4 bb{b.qE, b.qF, b.qG, b.qH};
 
   auto r1 = _mm_subs_epu8(BQuad4ToM128(aa), BQuad4ToM128(ba));
   auto r2 = _mm_subs_epu8(BQuad4ToM128(ba), BQuad4ToM128(bb));
@@ -144,10 +147,10 @@ BQuad8 Sub(BQuad8 a, BQuad8 b) {
 }
 
 BQuad8 Mul(BQuad8 a, BQuad8 b) {
-  auto b1 = BQuad4(a.a, a.b, a.c, a.d);
-  auto b2 = BQuad4(a.e, a.f, a.g, a.h);
-  auto b3 = BQuad4(b.a, b.b, b.c, b.d);
-  auto b4 = BQuad4(b.e, b.f, b.g, b.h);
+  BQuad4 b1{a.qA, a.qB, a.qC, a.qD};
+  BQuad4 b2{a.qE, a.qF, a.qG, a.qH};
+  BQuad4 b3{b.qA, b.qB, b.qC, b.qD};
+  BQuad4 b4{b.qE, b.qF, b.qG, b.qH};
 
   auto r1 = Mul(b1, b3);
   auto r2 = Mul(b2, b4);
@@ -156,33 +159,33 @@ BQuad8 Mul(BQuad8 a, BQuad8 b) {
 }
 
 BQuad8 Div(BQuad8 a, BQuad8 b) {
-  auto r1 = Div(BQuad4(a.a, a.b, a.c, a.d), BQuad4(b.a, b.b, b.c, b.d));
-  auto r2 = Div(BQuad4(a.e, a.f, a.g, a.h), BQuad4(b.e, b.f, b.g, b.h));
+  auto r1 = Div(BQuad4(a.qA, a.qB, a.qC, a.qD), BQuad4(b.qA, b.qB, b.qC, b.qD));
+  auto r2 = Div(BQuad4(a.qE, a.qF, a.qG, a.qH), BQuad4(b.qE, b.qF, b.qG, b.qH));
 
   return {r1, r2};
 }
 
 FQuad2 Add(FQuad2 a, FQuad2 b) {
-  auto r1 = _mm_add_ps(FQuadToM128(a.a), FQuadToM128(b.a));
-  auto r2 = _mm_add_ps(FQuadToM128(a.b), FQuadToM128(b.b));
+  auto r1 = _mm_add_ps(FQuadToM128(a.qA), FQuadToM128(b.qA));
+  auto r2 = _mm_add_ps(FQuadToM128(a.qB), FQuadToM128(b.qB));
   return {M128ToFQuad(r1), M128ToFQuad(r2)};
 }
 
 FQuad2 Sub(FQuad2 a, FQuad2 b) {
-  auto r1 = _mm_sub_ps(FQuadToM128(a.a), FQuadToM128(b.a));
-  auto r2 = _mm_sub_ps(FQuadToM128(a.b), FQuadToM128(b.b));
+  auto r1 = _mm_sub_ps(FQuadToM128(a.qA), FQuadToM128(b.qA));
+  auto r2 = _mm_sub_ps(FQuadToM128(a.qB), FQuadToM128(b.qB));
   return {M128ToFQuad(r1), M128ToFQuad(r2)};
 }
 
 FQuad2 Mul(FQuad2 a, FQuad2 b) {
-  auto r1 = _mm_mul_ps(FQuadToM128(a.a), FQuadToM128(b.a));
-  auto r2 = _mm_mul_ps(FQuadToM128(a.b), FQuadToM128(b.b));
+  auto r1 = _mm_mul_ps(FQuadToM128(a.qA), FQuadToM128(b.qA));
+  auto r2 = _mm_mul_ps(FQuadToM128(a.qB), FQuadToM128(b.qB));
   return {M128ToFQuad(r1), M128ToFQuad(r2)};
 }
 
 FQuad2 Div(FQuad2 a, FQuad2 b) {
-  auto r1 = _mm_div_ps(FQuadToM128(a.a), FQuadToM128(b.a));
-  auto r2 = _mm_div_ps(FQuadToM128(a.b), FQuadToM128(b.b));
+  auto r1 = _mm_div_ps(FQuadToM128(a.qA), FQuadToM128(b.qA));
+  auto r2 = _mm_div_ps(FQuadToM128(a.qB), FQuadToM128(b.qB));
   return {M128ToFQuad(r1), M128ToFQuad(r2)};
 }
 

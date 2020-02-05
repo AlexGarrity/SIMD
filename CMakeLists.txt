@@ -7,16 +7,14 @@ set(CMAKE_CXX_STANDARD 17)
 message(STATUS "Using ${PROJECT_NAME} Version ${PROJECT_VERSION}")
 
 # Configure the core file with the project name and version
-configure_file("${CMAKE_SOURCE_DIR}/cmake/Core.hpp.in" "${CMAKE_SOURCE_DIR}/include/Core.hpp")
-
-# Set the default build type to release
-set(CMAKE_BUILD_TYPE "Release")
+configure_file("${SIMD_SOURCE_DIR}/cmake/Core.hpp.in" "${SIMD_SOURCE_DIR}/include/Core.hpp")
 
 # Build variables
 set(BUILD_agSIMD TRUE CACHE BOOL "Build the library")
 set(BUILD_SHARED_LIBS TRUE CACHE BOOL "Build the library shared (true) or static (false)")
 
 # Unit test variables
+set(TEST_QUAD FALSE CACHE BOOL "Run unit tests to check that the quad component works")
 set(TEST_MATH FALSE CACHE BOOL "Run unit tests to check that the math component works")
 set(TEST_MATH_PACKED FALSE CACHE BOOL "Run unit tests to check that the packed math component works")
 
@@ -25,16 +23,6 @@ set(EXTENSION_DISABLE_SSE2 FALSE CACHE BOOL "Force compilation not to use SSE2+ 
 set(EXTENSION_DISABLE_SSE4 FALSE CACHE BOOL "Force compilation not to use SSE4+ extensions")
 set(EXTENSION_DISABLE_AVX2 FALSE CACHE BOOL "Force compilation not to use AVX2+ extensions")
 set(EXTENSION_RESET_CHECKS FALSE CACHE BOOL "Reset the extension checks")
-
-# If we're running unit tests, add them in now
-if (${TEST_MATH})
-    set(CMAKE_BUILD_TYPE "Debug")
-    include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsMath.cmake)
-endif()
-if (${TEST_MATH_PACKED})
-    set(CMAKE_BUILD_TYPE "Debug")
-    include(${CMAKE_SOURCE_DIR}/cmake/UnitTestsPacked.cmake)
-endif()
 
 # Set BUILD_LIB to switch from import to export
 if(${BUILD_agSIMD})
@@ -50,8 +38,8 @@ endif()
 
 # Set the math sources
 set(SOURCE
-    ${CMAKE_SOURCE_DIR}/src/Math.cpp
-    ${CMAKE_SOURCE_DIR}/src/PackedMath.cpp
+    ${SIMD_SOURCE_DIR}/src/Math.cpp
+    ${SIMD_SOURCE_DIR}/src/PackedMath.cpp
 )
 
 # Are we resetting the checks and doing them again?
@@ -63,15 +51,15 @@ endif()
 
 # Check which extensions we have, if we need to
 if (NOT DEFINED CACHE{HAS_AVX2})
-    include(${CMAKE_SOURCE_DIR}/cmake/TestAVX2.cmake)
+    include(${SIMD_SOURCE_DIR}/cmake/TestAVX2.cmake)
     TestAVX2()
 endif()
 if (NOT DEFINED CACHE{HAS_SSE4})
-    include(${CMAKE_SOURCE_DIR}/cmake/TestSSE4.cmake)
+    include(${SIMD_SOURCE_DIR}/cmake/TestSSE4.cmake)
     TestSSE4()
 endif()
 if (NOT DEFINED CACHE{HAS_SSE2})
-    include(${CMAKE_SOURCE_DIR}/cmake/TestSSE2.cmake)
+    include(${SIMD_SOURCE_DIR}/cmake/TestSSE2.cmake)
     TestSSE2()
 endif()
 
@@ -97,10 +85,10 @@ if("${HAS_AVX2}" STREQUAL "0")
     message(NOTICE "CPU supports AVX2, enabling AVX2 maths")
     # Enable the AVX versions of Math and PackedMath
     set(MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/MathAVX.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/MathAVX.cpp
     )
     set(PACKED_MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/PackedMathAVX.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/PackedMathAVX.cpp
     )
     # Define the stuff we need to turn extensions on
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "ENABLE_EXTENSIONS" "FOUND_AVX2")
@@ -111,10 +99,10 @@ elseif("${HAS_SSE4}" STREQUAL "0")
     message(NOTICE "CPU supports SSE4, enabling SSE4 maths")
     # Enable the AVX versions of Math and PackedMath
     set(MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/MathSSE.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/MathSSE.cpp
     )
     set(PACKED_MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/PackedMathSSE.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/PackedMathSSE.cpp
     )
     # Define the stuff we need to turn extensions on
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "ENABLE_EXTENSIONS" "FOUND_SSE2")
@@ -125,10 +113,10 @@ elseif("${HAS_SSE2}" STREQUAL "0")
     message(NOTICE "CPU supports SSE2, enabling SSE2 maths")
     # Enable the AVX versions of Math and PackedMath
     set(MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/MathSSE.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/MathSSE.cpp
     )
     set(PACKED_MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/PackedMathSSE.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/PackedMathSSE.cpp
     )
     # Define the stuff we need to turn extensions on
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS} "ENABLE_EXTENSIONS" "FOUND_SSE2")
@@ -139,14 +127,28 @@ else()
     message(NOTICE "SIMD extensions not available, using vanilla maths")
     message(WARNING "You likely will not see any speed improvement over regular code")
     set(MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/Math.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/Math.cpp
     )
     set(PACKED_MATH_SOURCE
-        ${CMAKE_SOURCE_DIR}/src/Math/PackedMath.cpp
+        ${SIMD_SOURCE_DIR}/src/Math/PackedMath.cpp
     )
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS})
     set(EXTRA_COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
     # No extra definitions needed.  Vanilla C++
+endif()
+
+# If we're running unit tests, add them in now
+if (${TEST_QUAD})
+    set(CMAKE_BUILD_TYPE "Debug")
+    include(${SIMD_SOURCE_DIR}/cmake/UnitTestsQuad.cmake)
+endif()
+if (${TEST_MATH})
+    set(CMAKE_BUILD_TYPE "Debug")
+    include(${SIMD_SOURCE_DIR}/cmake/UnitTestsMath.cmake)
+endif()
+if (${TEST_MATH_PACKED})
+    set(CMAKE_BUILD_TYPE "Debug")
+    include(${SIMD_SOURCE_DIR}/cmake/UnitTestsPacked.cmake)
 endif()
 
 # Add the sources to the library
@@ -175,7 +177,7 @@ set_target_properties(
 
 # Add the include directory to the library
 target_include_directories(
-    SIMD PRIVATE ${CMAKE_SOURCE_DIR}/include
+    SIMD PRIVATE ${SIMD_SOURCE_DIR}/include
 )
 
 # Install stuff

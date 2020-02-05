@@ -5,10 +5,10 @@ enable_testing()
 
 find_package(GTest REQUIRED)
 
-set (TEST_NAME ${PROJECT_NAME}TestPacked)
+set (TEST_NAME ${PROJECT_NAME}TestQuad)
 
 file(GLOB_RECURSE TEST_SRC
-    ${SIMD_SOURCE_DIR}/test/TestPacked.cpp
+    ${SIMD_SOURCE_DIR}/test/TestQuad.cpp
 )
 
 

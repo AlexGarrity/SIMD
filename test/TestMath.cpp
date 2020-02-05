@@ -1,153 +1,125 @@
 
-#include "../include/Quad.hpp"
-#include "../include/Math.hpp"
+#include "Math.hpp"
 #include <gtest/gtest.h>
 
 using namespace ag::SIMD;
+using namespace ag::SIMD::internal;
+
+const BQuad qb1{16, 32, 39, 0};
+const BQuad qb2{1, 4, 13, 2};
+
+const FQuad qf1(FP(qb1.a), FP(qb1.b), FP(qb1.c), FP(qb1.d));
+const FQuad qf2(FP(qb2.a), FP(qb2.b), FP(qb2.c), FP(qb2.d));
+
+const DQuad qd1(FP(qb1.a), FP(qb1.b), FP(qb1.c), FP(qb1.d));
+const DQuad qd2(FP(qb2.a), FP(qb2.b), FP(qb2.c), FP(qb2.d));
 
 TEST(T_BYTE, ADD) {
-  BQuad q1(0, 2, 39, 8);
-  BQuad q2(16, 32, 64, 128);
+  BQuad r = Add(qb1, qb2);
 
-  auto r = Add(q1, q2);
-
-  ASSERT_EQ(q1.a + q2.a, r.a);
-  ASSERT_EQ(q1.b + q2.b, r.b);
-  ASSERT_EQ(q1.c + q2.c, r.c);
-  ASSERT_EQ(q1.d + q2.d, r.d);
+  EXPECT_EQ((qb1.a + qb2.a) % 256, r.a);
+  EXPECT_EQ((qb1.b + qb2.b) % 256, r.b);
+  EXPECT_EQ((qb1.c + qb2.c) % 256, r.c);
+  EXPECT_EQ((qb1.d + qb2.d) % 256, r.d);
 }
 
 TEST(T_BYTE, SUB) {
-  BQuad q1(16, 39, 4, 128);
-  BQuad q2(1, 2, 4, 0);
+  BQuad r = Sub(qb1, qb2);
 
-  auto r = Sub(q1, q2);
-
-  ASSERT_EQ(q1.a - q2.a, r.a);
-  ASSERT_EQ(q1.b - q2.b, r.b);
-  ASSERT_EQ(q1.c - q2.c, r.c);
-  ASSERT_EQ(q1.d - q2.d, r.d);
+  EXPECT_EQ(B(qb1.a - qb2.a), r.a);
+  EXPECT_EQ(B(qb1.b - qb2.b), r.b);
+  EXPECT_EQ(B(qb1.c - qb2.c), r.c);
+  EXPECT_EQ(B(qb1.d - qb2.d), r.d);
 }
 
 TEST(T_BYTE, MUL) {
-  BQuad q1(9, 3, 2, 1);
-  BQuad q2(1, 2, 4, 8);
+  BQuad r = Mul(qb1, qb2);
 
-  auto r = Mul(q1, q2);
-
-
-  ASSERT_EQ(q1.a * q2.a, r.a); // 64
-  ASSERT_EQ(q1.b * q2.b, r.b); // 16
-  ASSERT_EQ(q1.c * q2.c, r.c); // 4
-  ASSERT_EQ(q1.d * q2.d, r.d); // 1
+  EXPECT_EQ((qb1.a * qb2.a) % 256, r.a); // 64
+  EXPECT_EQ((qb1.b * qb2.b) % 256, r.b); // 16
+  EXPECT_EQ((qb1.c * qb2.c) % 256, r.c); // 4
+  EXPECT_EQ((qb1.d * qb2.d) % 256, r.d); // 1
 }
 
 TEST(T_BYTE, DIV) {
-  BQuad q1(16, 32, 64, 128);
-  BQuad q2(1, 2, 18, 7);
+  BQuad r = Div(qb1, qb2);
 
-  auto r = Div(q1, q2);
-
-  ASSERT_EQ(q1.a / q2.a, r.a); // /0
-  ASSERT_EQ(q1.b / q2.b, r.b); // 205
-  ASSERT_EQ(q1.c / q2.c, r.c); // /0
-  ASSERT_EQ(q1.d / q2.d, r.d); // /0
+  EXPECT_EQ(B(qb1.a / qb2.a), r.a); // /0
+  EXPECT_EQ(B(qb1.b / qb2.b), r.b); // 205
+  EXPECT_EQ(B(qb1.c / qb2.c), r.c); // /0
+  EXPECT_EQ(B(qb1.d / qb2.d), r.d); // /0
 }
 
 TEST(T_FLOAT, ADD) {
-  FQuad q1(1.0, 2.0, 4.0, 8.0);
-  FQuad q2(16.0, 32.0, 64.0, 128.0);
+  FQuad r = Add(qf1, qf2);
 
-  auto r = Add(q1, q2);
-
-  ASSERT_FLOAT_EQ(q1.a + q2.a, r.a);
-  ASSERT_FLOAT_EQ(q1.b + q2.b, r.b);
-  ASSERT_FLOAT_EQ(q1.c + q2.c, r.c);
-  ASSERT_FLOAT_EQ(q1.d + q2.d, r.d);
+  EXPECT_FLOAT_EQ(qf1.a + qf2.a, r.a);
+  EXPECT_FLOAT_EQ(qf1.b + qf2.b, r.b);
+  EXPECT_FLOAT_EQ(qf1.c + qf2.c, r.c);
+  EXPECT_FLOAT_EQ(qf1.d + qf2.d, r.d);
 }
 
 TEST(T_FLOAT, SUB) {
-  FQuad q2(1.0, 2.0, 4.0, 8.0);
-  FQuad q1(16.0, 32.0, 64.0, 128.0);
+  FQuad r = Sub(qf1, qf2);
 
-  auto r = Sub(q1, q2);
-
-  ASSERT_FLOAT_EQ(q1.a - q2.a, r.a);
-  ASSERT_FLOAT_EQ(q1.b - q2.b, r.b);
-  ASSERT_FLOAT_EQ(q1.c - q2.c, r.c);
-  ASSERT_FLOAT_EQ(q1.d - q2.d, r.d);
+  EXPECT_FLOAT_EQ(qf1.a - qf2.a, r.a);
+  EXPECT_FLOAT_EQ(qf1.b - qf2.b, r.b);
+  EXPECT_FLOAT_EQ(qf1.c - qf2.c, r.c);
+  EXPECT_FLOAT_EQ(qf1.d - qf2.d, r.d);
 }
 
 TEST(T_FLOAT, MUL) {
-  FQuad q1(8.0, 4.0, 2.0, 1.0);
-  FQuad q2(16.0, 32.0, 64.0, 128.0);
+  FQuad r = Mul(qf1, qf2);
 
-  auto r = Mul(q1, q2);
-
-  ASSERT_FLOAT_EQ(q1.a * q2.a, r.a);
-  ASSERT_FLOAT_EQ(q1.b * q2.b, r.b);
-  ASSERT_FLOAT_EQ(q1.c * q2.c, r.c);
-  ASSERT_FLOAT_EQ(q1.d * q2.d, r.d);
+  EXPECT_FLOAT_EQ(qf1.a * qf2.a, r.a);
+  EXPECT_FLOAT_EQ(qf1.b * qf2.b, r.b);
+  EXPECT_FLOAT_EQ(qf1.c * qf2.c, r.c);
+  EXPECT_FLOAT_EQ(qf1.d * qf2.d, r.d);
 }
 
 TEST(T_FLOAT, DIV) {
-  FQuad q2(1, 2, 4, 8);
-  FQuad q1(16, 32, 64, 128);
+  FQuad r = Div(qf1, qf2);
 
-  auto r = Div(q1, q2);
-
-  ASSERT_FLOAT_EQ(q1.a / q2.a, r.a);
-  ASSERT_FLOAT_EQ(q1.b / q2.b, r.b);
-  ASSERT_FLOAT_EQ(q1.c / q2.c, r.c);
-  ASSERT_FLOAT_EQ(q1.d / q2.d, r.d);
+  EXPECT_FLOAT_EQ(qf1.a / qf2.a, r.a);
+  EXPECT_FLOAT_EQ(qf1.b / qf2.b, r.b);
+  EXPECT_FLOAT_EQ(qf1.c / qf2.c, r.c);
+  EXPECT_FLOAT_EQ(qf1.d / qf2.d, r.d);
 }
 
 TEST(T_DOUBLE, ADD) {
-  DQuad q1(1.0, 2.0, 4.0, 8.0);
-  DQuad q2(16.0, 32.0, 64.0, 128.0);
+  DQuad r = Add(qd1, qd2);
 
-  auto r = Add(q1, q2);
-
-  ASSERT_DOUBLE_EQ(q1.a + q2.a, r.a);
-  ASSERT_DOUBLE_EQ(q1.b + q2.b, r.b);
-  ASSERT_DOUBLE_EQ(q1.c + q2.c, r.c);
-  ASSERT_DOUBLE_EQ(q1.d + q2.d, r.d);
+  EXPECT_DOUBLE_EQ(qd1.a + qd2.a, r.a);
+  EXPECT_DOUBLE_EQ(qd1.b + qd2.b, r.b);
+  EXPECT_DOUBLE_EQ(qd1.c + qd2.c, r.c);
+  EXPECT_DOUBLE_EQ(qd1.d + qd2.d, r.d);
 }
 
 TEST(T_DOUBLE, SUB) {
-  DQuad q2(1.0, 2.0, 4.0, 8.0);
-  DQuad q1(16.0, 32.0, 64.0, 128.0);
+  DQuad r = Sub(qd1, qd2);
 
-  auto r = Sub(q1, q2);
-
-  ASSERT_DOUBLE_EQ(q1.a - q2.a, r.a);
-  ASSERT_DOUBLE_EQ(q1.b - q2.b, r.b);
-  ASSERT_DOUBLE_EQ(q1.c - q2.c, r.c);
-  ASSERT_DOUBLE_EQ(q1.d - q2.d, r.d);
+  EXPECT_DOUBLE_EQ(qd1.a - qd2.a, r.a);
+  EXPECT_DOUBLE_EQ(qd1.b - qd2.b, r.b);
+  EXPECT_DOUBLE_EQ(qd1.c - qd2.c, r.c);
+  EXPECT_DOUBLE_EQ(qd1.d - qd2.d, r.d);
 }
 
 TEST(T_DOUBLE, MUL) {
-  DQuad q1(8.0, 4.0, 2.0, 1.0);
-  DQuad q2(16.0, 32.0, 64.0, 128.0);
+  DQuad r = Mul(qd1, qd2);
 
-  auto r = Mul(q1, q2);
-
-  ASSERT_DOUBLE_EQ(q1.a * q2.a, r.a);
-  ASSERT_DOUBLE_EQ(q1.b * q2.b, r.b);
-  ASSERT_DOUBLE_EQ(q1.c * q2.c, r.c);
-  ASSERT_DOUBLE_EQ(q1.d * q2.d, r.d);
+  EXPECT_DOUBLE_EQ(qd1.a * qd2.a, r.a);
+  EXPECT_DOUBLE_EQ(qd1.b * qd2.b, r.b);
+  EXPECT_DOUBLE_EQ(qd1.c * qd2.c, r.c);
+  EXPECT_DOUBLE_EQ(qd1.d * qd2.d, r.d);
 }
 
 TEST(T_DOUBLE, DIV) {
-  DQuad q2(1.0, 2.0, 4.0, 8.0);
-  DQuad q1(16.0, 32.0, 64.0, 128.0);
+  DQuad r = Div(qd1, qd2);
 
-  auto r = Div(q1, q2);
-
-  ASSERT_DOUBLE_EQ(q1.a / q2.a, r.a);
-  ASSERT_DOUBLE_EQ(q1.b / q2.b, r.b);
-  ASSERT_DOUBLE_EQ(q1.c / q2.c, r.c);
-  ASSERT_DOUBLE_EQ(q1.d / q2.d, r.d);
+  EXPECT_DOUBLE_EQ(qd1.a / qd2.a, r.a);
+  EXPECT_DOUBLE_EQ(qd1.b / qd2.b, r.b);
+  EXPECT_DOUBLE_EQ(qd1.c / qd2.c, r.c);
+  EXPECT_DOUBLE_EQ(qd1.d / qd2.d, r.d);
 }
 
 int main(int argc, char **argv) {

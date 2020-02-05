@@ -17,11 +17,11 @@ function(TestSSE2)
     endif()
 
     try_run(
-        EXIT_CODE COMPILE_CODE ${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/cmake/SSE2.cpp
+        EXIT_CODE COMPILE_CODE ${CMAKE_BINARY_DIR} ${SIMD_SOURCE_DIR}/cmake/SSE2.cpp
         COMPILE_DEFINITIONS ${EXTENSION_FLAG}
     )
     
     message(DEBUG "SSE2 support returned ${EXIT_CODE}")
-    set(SSE2_FLAG ${EXTENSION_FLAG} PARENT_SCOPE)
+    set(SSE2_FLAG ${EXTENSION_FLAG} CACHE INTERNAL "The flag required to complile SSE2" FORCE)
     set(HAS_SSE2 ${EXIT_CODE} CACHE INTERNAL "Does the system has SSE2?" FORCE)
 endfunction()

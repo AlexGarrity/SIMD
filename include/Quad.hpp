@@ -30,63 +30,78 @@ template <typename T> struct AG_API Quad {
   Quad(Quad2<T> v);
   Quad(Quad4<T> v);
   Quad(Quad8<T> v);
+
+  inline bool operator==(const Quad<T> &other) {
+    return (a == other.a & b == other.b & c == other.c & d == other.d);
+  }
 };
 
 template <typename T> struct AG_API Quad2 {
-  Quad<T> a, b;
+  Quad<T> qA, qB;
 
   Quad2() = default;
-  Quad2(T v) : a{v}, b{v} {}
+  Quad2(T v) : qA{v}, qB{v} {}
 
-  Quad2(Quad<T> a, Quad<T> b) : a{a}, b{b} {}
+  Quad2(Quad<T> a, Quad<T> b) : qA{a}, qB{b} {}
 
   Quad2(Quad4<T> v);
   Quad2(Quad8<T> v);
+
+  inline bool operator==(const Quad2<T> &other) {
+    return (qA == other.qA & qB == other.qB);
+  }
 };
 
 template <typename T> struct AG_API Quad4 {
-  Quad<T> a, b, c, d;
+  Quad<T> qA, qB, qC, qD;
 
   Quad4() = default;
-  Quad4(T v) : a{v}, b{v} {}
+  Quad4(T v) : qA{v}, qB{v} {}
 
-  Quad4(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d) : a{a}, b{b}, c{c}, d{d} {}
+  Quad4(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d)
+      : qA{a}, qB{b}, qC{c}, qD{d} {}
 
-  Quad4(Quad2<T> a, Quad2<T> b) : a{a.a}, b{a.b}, c{b.a}, d{b.b} {}
+  Quad4(Quad2<T> a, Quad2<T> b) : qA{a.qA}, qB{a.qB}, qC{b.qA}, qD{b.qB} {}
 
   Quad4(Quad8<T> v);
+
+  inline bool operator==(const Quad4<T> &other) {
+    return (qA == other.qA & qB == other.qB & qC == other.qC & qD == other.qD);
+  }
 };
 
 template <typename T> struct AG_API Quad8 {
-  Quad<T> a, b, c, d, e, f, g, h;
+  Quad<T> qA, qB, qC, qD, qE, qF, qG, qH;
 
   Quad8() = default;
-  Quad8(T v) : a{v}, b{v} {}
+  Quad8(T v) : qA{v}, qB{v} {}
 
   Quad8(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d, Quad<T> e, Quad<T> f,
         Quad<T> g, Quad<T> h)
-      : a{a}, b{b}, c{c}, d{d}, e{e}, f{f}, g{g}, h{h} {}
+      : qA{a}, qB{b}, qC{c}, qD{d}, qE{e}, qF{f}, qG{g}, qH{h} {}
 
   Quad8(Quad2<T> a, Quad2<T> b, Quad2<T> c, Quad2<T> d)
-      : a{a.a}, b{a.b}, c{b.a}, d{b.b}, e{c.a}, f{c.b}, g{d.a}, h{d.b} {}
+      : qA{a.qA}, qB{a.qB}, qC{b.qA}, qD{b.qB}, qE{c.qA}, qF{c.qB}, qG{d.qA}, qH{d.qB} {
+  }
 
   Quad8(Quad4<T> a, Quad4<T> b)
-      : a{a.a}, b{a.b}, c{a.c}, d{a.d}, e{b.a}, f{b.b}, g{b.c}, h{b.d} {}
+      : qA{a.qA}, qB{a.qB}, qC{a.qC}, qD{a.qD}, qE{b.qA}, qF{b.qB}, qG{b.qC},
+        qH{b.qD} {}
 };
 
 // Narrowing constructors
 // Quad{8,4,2} to Quad
-template <typename T> AG_API Quad<T>::Quad(Quad2<T> v) : Quad(v.a) {}
-template <typename T> AG_API Quad<T>::Quad(Quad4<T> v) : Quad(v.a) {}
-template <typename T> AG_API Quad<T>::Quad(Quad8<T> v) : Quad(v.a) {}
+template <typename T> AG_API Quad<T>::Quad(Quad2<T> v) : Quad(v.qA) {}
+template <typename T> AG_API Quad<T>::Quad(Quad4<T> v) : Quad(v.qA) {}
+template <typename T> AG_API Quad<T>::Quad(Quad8<T> v) : Quad(v.qA) {}
 
 // Quad{8,4} to Quad2
-template <typename T> AG_API Quad2<T>::Quad2(Quad4<T> v) : Quad2(v.a, v.b) {}
-template <typename T> AG_API Quad2<T>::Quad2(Quad8<T> v) : Quad2(v.a, v.b) {}
+template <typename T> AG_API Quad2<T>::Quad2(Quad4<T> v) : Quad2(v.qA, v.qB) {}
+template <typename T> AG_API Quad2<T>::Quad2(Quad8<T> v) : Quad2(v.qA, v.qB) {}
 
 // Quad8 to Quad4
 template <typename T>
-AG_API Quad4<T>::Quad4(Quad8<T> v) : Quad4(v.a, v.b, v.c, v.d) {}
+AG_API Quad4<T>::Quad4(Quad8<T> v) : Quad4(v.qA, v.qB, v.qC, v.qD) {}
 
 #define BYTE uint8_t
 #define SHORT int16_t

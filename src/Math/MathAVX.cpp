@@ -10,6 +10,9 @@
 namespace ag {
 namespace SIMD {
 
+// Conversion macros
+using namespace internal;
+
 // Some handy little helper functions for unpacking __mm256 types
 inline BQuad UnpackChar(__m256i v) {
   return {B(v[0]), B(v[1]), B(v[2]), B(v[3])};

@@ -10,6 +10,9 @@
 namespace ag {
 namespace SIMD {
 
+// Conversion macros
+using namespace internal;
+
 // Some handy little helper functions for unpacking __mm256 types
 BQuad UnpackChar(__m128i v) {
   return {B(v[0]), B(v[0] >> 8), B(v[0] >> 16), B(v[0] >> 24)};
@@ -23,9 +26,7 @@ BQuad UnpackInt(__m128i v) {
   return {B(v[0]), B(v[0] >> 32), B(v[1]), B(v[1] >> 32)};
 }
 
-FQuad UnpackFloat(__m128 v) {
-  return {v[0], v[1], v[2], v[3]};
-}
+FQuad UnpackFloat(__m128 v) { return {v[0], v[1], v[2], v[3]}; }
 
 DQuad UnpackDouble(__m128d d1, __m128d d2) {
   return {d1[0], d1[1], d2[0], d2[1]};
@@ -43,18 +44,11 @@ __m128i PackBQuadShort(BQuad b) {
   return {iD(b.a) | iD(b.b) << 16 | iD(b.c) << 32 | iD(b.d) << 48};
 }
 
-
-
 BQuad Add(const BQuad qA, const BQuad qB) {
   __m128i a = PackBQuad(qA);
   __m128i b = PackBQuad(qB);
 
-  printf("a:\t%i\t%i\t%i\t%i\n", qA.a, qA.b, qA.c, qA.d);
-  printf("b:\t%i\t%i\t%i\t%i\n", qB.a, qB.b, qB.c, qB.d);
-
   auto r = _mm_adds_epu8(a, b);
-
-  printf("r:\t%i\t%i\t%i\t%i\n", r.a, r.b, r.c, r.d);
 
   return UnpackChar(r);
 }
@@ -126,10 +120,8 @@ DQuad Sub(const DQuad qA, const DQuad qB) {
 
 BQuad Div(const BQuad qA, const BQuad qB) {
   // This has to be done as floats, as integer division is unsupported
-  __m128 a{FP(qA.a), FP(qA.b),
-           FP(qA.c), FP(qA.d)};
-  __m128 b{FP(qB.a), FP(qB.b),
-           FP(qB.c), FP(qB.d)};
+  __m128 a{FP(qA.a), FP(qA.b), FP(qA.c), FP(qA.d)};
+  __m128 b{FP(qB.a), FP(qB.b), FP(qB.c), FP(qB.d)};
   auto result = _mm_div_ps(a, b);
   return UnpackChar(result);
 }

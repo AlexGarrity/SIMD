@@ -4,19 +4,22 @@ include(GoogleTest)
 enable_testing()
 
 find_package(GTest REQUIRED)
-find_package(agSIMD REQUIRED)
 
 set (TEST_NAME ${PROJECT_NAME}TestMath)
 
 file(GLOB_RECURSE TEST_SRC
-    ${CMAKE_SOURCE_DIR}/test/TestMath.cpp
+    ${SIMD_SOURCE_DIR}/test/TestMath.cpp
 )
 
 
-add_executable(${TEST_NAME} ${TEST_SRC})
+add_executable(${TEST_NAME} ${TEST_SRC} ${SOURCE} ${MATH_SOURCE} ${PACKED_MATH_SOURCE})
 
-target_include_directories(${TEST_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+if(NOT "${EXTRA_COMPILE_FLAGS}" STREQUAL "")
+    set_target_properties(${TEST_NAME} PROPERTIES COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
+endif()
 
-target_link_libraries(${TEST_NAME} gtest gtest_main ag::SIMD)
+target_include_directories(${TEST_NAME} PRIVATE ${SIMD_SOURCE_DIR}/include)
+
+target_link_libraries(${TEST_NAME} gtest gtest_main)
 
 gtest_discover_tests(${TEST_NAME})
