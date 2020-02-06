@@ -1,5 +1,5 @@
 
-#include "PackedMath.hpp"
+#include <agSIMD/PackedMath.hpp>
 #include <gtest/gtest.h>
 
 using namespace ag::SIMD;

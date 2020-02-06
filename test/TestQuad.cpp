@@ -1,5 +1,5 @@
 
-#include "Quad.hpp"
+#include <agSIMD/Quad.hpp>
 #include <gtest/gtest.h>
 
 using namespace ag::SIMD;
