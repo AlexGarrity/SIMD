@@ -26,9 +26,9 @@ using namespace internal;
 __m128i BQuad4ToM128(BQuad4 v) {
   return { 
     iD(v.qA.a) <<  0 | iD(v.qA.b) <<  8 | iD(v.qA.c) << 16 | iD(v.qA.d) << 24
-  | iD(v.qB.a) << 32 | iD(v.qB.d) << 40 | iD(v.qB.c) << 48 | iD(v.qB.d) << 56,
+  | iD(v.qB.a) << 32 | iD(v.qB.b) << 40 | iD(v.qB.c) << 48 | iD(v.qB.d) << 56,
     iD(v.qC.a) <<  0 | iD(v.qC.b) <<  8 | iD(v.qC.c) << 16 | iD(v.qC.d) << 24
-  | iD(v.qD.a) << 32 | iD(v.qD.d) << 40 | iD(v.qD.c) << 48 | iD(v.qD.d) << 56
+  | iD(v.qD.a) << 32 | iD(v.qD.b) << 40 | iD(v.qD.c) << 48 | iD(v.qD.d) << 56
   };
 }
 
@@ -91,10 +91,10 @@ BQuad4 Mul(BQuad4 a, BQuad4 b) {
   auto r2 = _mm_mullo_epi16(m2, m4);
 
   return {
-    BQuad(B(r1[0]), B(r1[0] << 16), B(r1[0] << 32), B(r1[0] << 48)),
-    BQuad(B(r1[1]), B(r1[1] << 16), B(r1[1] << 32), B(r1[1] << 48)),
-    BQuad(B(r2[0]), B(r2[0] << 16), B(r2[0] << 32), B(r2[0] << 48)),
-    BQuad(B(r2[1]), B(r2[1] << 16), B(r2[1] << 32), B(r2[1] << 48)),
+    BQuad(B(r1[0]), B(r1[0] >> 16), B(r1[0] >> 32), B(r1[0] >> 48)),
+    BQuad(B(r1[1]), B(r1[1] >> 16), B(r1[1] >> 32), B(r1[1] >> 48)),
+    BQuad(B(r2[0]), B(r2[0] >> 16), B(r2[0] >> 32), B(r2[0] >> 48)),
+    BQuad(B(r2[1]), B(r2[1] >> 16), B(r2[1] >> 32), B(r2[1] >> 48)),
   };
 }
 
