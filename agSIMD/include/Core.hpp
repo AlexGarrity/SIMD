@@ -3,7 +3,7 @@
 
 #define LIB_VERSION "1.0.0"
 #define LIB_NAME "SIMD"
-#define LIB_EXTENSION "SSE4"
+#define LIB_EXTENSION "NORM"
 
 #if defined(_MSC_VER)
 // Windows DLL exporting
