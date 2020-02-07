@@ -17,7 +17,7 @@ function(TestSSE4)
     endif()
 
     try_run(
-        EXIT_CODE COMPILE_CODE ${CMAKE_BINARY_DIR} ${SIMD_SOURCE_DIR}/cmake/SSE2.cpp
+        EXIT_CODE COMPILE_CODE ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/SSE4.cpp
         COMPILE_DEFINITIONS ${EXTENSION_FLAG}
     )
     

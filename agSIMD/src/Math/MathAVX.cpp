@@ -22,8 +22,16 @@ inline FQuad UnpackFloat(__m256 v) {
   return {FP(v[0]), FP(v[1]), FP(v[2]), FP(v[3])};
 }
 
+BQuad UnpackFloatToChar(__m256 v) {
+  return {B(v[0]), B(v[1]), B(v[2]), B(v[3])};
+}
+
 inline DQuad UnpackDouble(__m256d v) {
   return {DP(v[0]), DP(v[1]), DP(v[2]), DP(v[3])};
+}
+
+__m256i PackBQuad(BQuad v) {
+  return {v.a, v.b, v.c, v.d};
 }
 
 BQuad Add(const BQuad qA, const BQuad qB) {
@@ -48,8 +56,8 @@ DQuad Add(const DQuad qA, const DQuad qB) {
 }
 
 BQuad Mul(const BQuad qA, const BQuad qB) {
-  __m256i a{qA.a, qA.b, qA.c, qA.d};
-  __m256i b{qB.a, qB.b, qB.c, qB.d};
+  auto a = PackBQuad(qA);
+  auto b = PackBQuad(qB);
   auto result = _mm256_mul_epu32(a, b);
   return UnpackChar(result);
 }
@@ -69,9 +77,9 @@ DQuad Mul(const DQuad qA, const DQuad qB) {
 }
 
 BQuad Sub(const BQuad qA, const BQuad qB) {
-  __m256i a{qA.a, qA.b, qA.c, qA.d};
-  __m256i b{qB.a, qB.b, qB.c, qB.d};
-  auto result = _mm256_sub_epi16(a, b);
+  auto m1 = PackBQuad(qA);
+  auto m2 = PackBQuad(qB);
+  auto result = _mm256_sub_epi16(m1, m2);
   return UnpackChar(result);
 }
 
@@ -93,7 +101,7 @@ BQuad Div(const BQuad qA, const BQuad qB) {
   __m256 a{FP(qA.a), FP(qA.b), FP(qA.c), FP(qA.d)};
   __m256 b{FP(qB.a), FP(qB.b), FP(qB.c), FP(qB.d)};
   auto result = _mm256_div_ps(a, b);
-  return UnpackChar(result);
+  return UnpackFloatToChar(result);
 }
 
 FQuad Div(const FQuad qA, const FQuad qB) {

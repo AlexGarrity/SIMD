@@ -29,7 +29,7 @@ TEST(T_BYTE, SUB) {
   EXPECT_EQ(B(qb1.a - qb2.a), r.a);
   EXPECT_EQ(B(qb1.b - qb2.b), r.b);
   EXPECT_EQ(B(qb1.c - qb2.c), r.c);
-  EXPECT_EQ(B(qb1.d - qb2.d), r.d);
+  EXPECT_EQ(B(qb1.d - qb2.d), r.d );
 }
 
 TEST(T_BYTE, MUL) {

@@ -26,6 +26,10 @@ BQuad UnpackInt(__m128i v) {
   return {B(v[0]), B(v[0] >> 32), B(v[1]), B(v[1] >> 32)};
 }
 
+BQuad UnpackFloatToChar(__m128 v) {
+  return { B(v[0]), B(v[1]), B(v[2]), B(v[3]) };
+}
+
 FQuad UnpackFloat(__m128 v) { return {v[0], v[1], v[2], v[3]}; }
 
 DQuad UnpackDouble(__m128d d1, __m128d d2) {
@@ -123,7 +127,7 @@ BQuad Div(const BQuad qA, const BQuad qB) {
   __m128 a{FP(qA.a), FP(qA.b), FP(qA.c), FP(qA.d)};
   __m128 b{FP(qB.a), FP(qB.b), FP(qB.c), FP(qB.d)};
   auto result = _mm_div_ps(a, b);
-  return UnpackChar(result);
+  return UnpackFloatToChar(result);
 }
 
 FQuad Div(const FQuad qA, const FQuad qB) {

@@ -1,9 +1,14 @@
 #pragma once
 
 
+namespace ag {
+    namespace SIMD {
+        #define LIB_VERSION "${PROJECT_VERSION}"
+        #define LIB_NAME "${PROJECT_NAME}"
+        #define LIB_EXTENSION "${PROJECT_EXTENSION}"
+    }
+}
 
-#define LIB_VERSION "${PROJECT_VERSION}"
-#define LIB_NAME "${PROJECT_NAME}"
 
 #if defined(_MSC_VER)
 // Windows DLL exporting

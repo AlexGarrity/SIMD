@@ -91,6 +91,9 @@ TEST(FQUAD2, CREATE) {
 }
 
 int main(int argc, char **argv) {
+  printf("----------------------------------------\n");
+  printf("%s VERSION %s - %s EXTENSIONS\n", LIB_NAME, LIB_VERSION, LIB_EXTENSION);
+  printf("----------------------------------------\n\n");
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

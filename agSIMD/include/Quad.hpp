@@ -56,7 +56,7 @@ template <typename T> struct AG_API Quad4 {
   Quad<T> qA, qB, qC, qD;
 
   Quad4() = default;
-  Quad4(T v) : qA{v}, qB{v} {}
+  Quad4(T v) : qA{v}, qB{v}, qC{v}, qD{v} {}
 
   Quad4(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d)
       : qA{a}, qB{b}, qC{c}, qD{d} {}
@@ -74,7 +74,7 @@ template <typename T> struct AG_API Quad8 {
   Quad<T> qA, qB, qC, qD, qE, qF, qG, qH;
 
   Quad8() = default;
-  Quad8(T v) : qA{v}, qB{v} {}
+  Quad8(T v) : qA{v}, qB{v}, qC{v}, qD{v}, qE{v}, qF{v}, qG{v}, qH{v} {}
 
   Quad8(Quad<T> a, Quad<T> b, Quad<T> c, Quad<T> d, Quad<T> e, Quad<T> f,
         Quad<T> g, Quad<T> h)
