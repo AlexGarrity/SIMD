@@ -26,8 +26,10 @@ else()
     set (LIBRARY_KEYWORD "STATIC")
 endif()
 
+# Only test if the user actually awnts to
+if (${TEST_QUAD} OR ${TEST_MATH} OR ${TEST_MATH_PACKED})
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
-enable_testing()
-
-add_subdirectory(test)
 add_subdirectory(agSIMD)

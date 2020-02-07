@@ -27,13 +27,13 @@ using namespace internal;
 __m256i BQuad8ToM256(BQuad8 v) {
   return { 
     iD(v.qA.a) <<  0 | iD(v.qA.b) <<  8 | iD(v.qA.c) << 16 | iD(v.qA.d) << 24
-  | iD(v.qB.a) << 32 | iD(v.qB.d) << 40 | iD(v.qB.c) << 48 | iD(v.qB.d) << 56,
+  | iD(v.qB.a) << 32 | iD(v.qB.b) << 40 | iD(v.qB.c) << 48 | iD(v.qB.d) << 56,
     iD(v.qC.a) <<  0 | iD(v.qC.b) <<  8 | iD(v.qC.c) << 16 | iD(v.qC.d) << 24
-  | iD(v.qD.a) << 32 | iD(v.qD.d) << 40 | iD(v.qD.c) << 48 | iD(v.qD.d) << 56,
+  | iD(v.qD.a) << 32 | iD(v.qD.b) << 40 | iD(v.qD.c) << 48 | iD(v.qD.d) << 56,
     iD(v.qE.a) <<  0 | iD(v.qE.b) <<  8 | iD(v.qE.c) << 16 | iD(v.qE.d) << 24
-  | iD(v.qF.a) << 32 | iD(v.qF.d) << 40 | iD(v.qF.c) << 48 | iD(v.qF.d) << 56,
+  | iD(v.qF.a) << 32 | iD(v.qF.b) << 40 | iD(v.qF.c) << 48 | iD(v.qF.d) << 56,
     iD(v.qG.a) <<  0 | iD(v.qG.b) <<  8 | iD(v.qG.c) << 16 | iD(v.qG.d) << 24
-  | iD(v.qH.a) << 32 | iD(v.qH.d) << 40 | iD(v.qH.c) << 48 | iD(v.qH.d) << 56
+  | iD(v.qH.a) << 32 | iD(v.qH.b) << 40 | iD(v.qH.c) << 48 | iD(v.qH.d) << 56
   };
 }
 
@@ -53,18 +53,18 @@ BQuad8 M256ToBQuad8(__m256i v) {
 __m256i BQuad4ToM256(BQuad4 v) {
   return { 
     iD(v.qA.a) << 0 | iD(v.qA.b) << 8 | iD(v.qA.c) << 16 | iD(v.qA.d) << 24,
-    iD(v.qB.a) << 0 | iD(v.qB.d) << 8 | iD(v.qB.c) << 16 | iD(v.qB.d) << 24,
+    iD(v.qB.a) << 0 | iD(v.qB.b) << 8 | iD(v.qB.c) << 16 | iD(v.qB.d) << 24,
     iD(v.qC.a) << 0 | iD(v.qC.b) << 8 | iD(v.qC.c) << 16 | iD(v.qC.d) << 24,
-    iD(v.qD.a) << 0 | iD(v.qD.d) << 8 | iD(v.qD.c) << 16 | iD(v.qD.d) << 24
+    iD(v.qD.a) << 0 | iD(v.qD.b) << 8 | iD(v.qD.c) << 16 | iD(v.qD.d) << 24
   };
 }
 
 BQuad4 M256ToBQuad4(__m256i v) {
   return {
     BQuad(B(v[0] >> 0), B(v[0] >> 8), B(v[0] >> 16), B(v[0] >> 24)),
-    BQuad(B(v[0] >> 0), B(v[0] >> 8), B(v[0] >> 16), B(v[0] >> 24)),
     BQuad(B(v[1] >> 0), B(v[1] >> 8), B(v[1] >> 16), B(v[1] >> 24)),
-    BQuad(B(v[1] >> 0), B(v[1] >> 8), B(v[1] >> 16), B(v[1] >> 24))
+    BQuad(B(v[2] >> 0), B(v[2] >> 8), B(v[2] >> 16), B(v[2] >> 24)),
+    BQuad(B(v[3] >> 0), B(v[3] >> 8), B(v[3] >> 16), B(v[3] >> 24))
   };
 }
 
@@ -81,35 +81,41 @@ FQuad2 M256ToFQuad2(__m256 v) {
 
 
 BQuad4 Add(BQuad4 a, BQuad4 b) {
-  return Add(BQuad8(a,a), BQuad8(b,b));
+  auto m1 = BQuad4ToM256(a);
+  auto m2 = BQuad4ToM256(b);
+  auto r = _mm256_adds_epu8(m1, m2);
+  return M256ToBQuad4(r);
 }
 
 BQuad4 Sub(BQuad4 a, BQuad4 b) {
-  return Sub(BQuad8(a,a), BQuad8(b,b));
+  auto m1 = BQuad4ToM256(a);
+  auto m2 = BQuad4ToM256(b);
+  auto r = _mm256_subs_epu8(m1, m2);
+  return M256ToBQuad4(r);
 }
 
 BQuad4 Mul(BQuad4 a, BQuad4 b) {
   __m256i m1 = {
-    iD(a.qA.a) << 0 | iD(a.qA.a) << 16 | iD(a.qA.a) << 32 | iD(a.qA.a) << 48, 
-    iD(a.qB.a) << 0 | iD(a.qB.a) << 16 | iD(a.qB.a) << 32 | iD(a.qB.a) << 48,
-    iD(a.qC.a) << 0 | iD(a.qC.a) << 16 | iD(a.qC.a) << 32 | iD(a.qC.a) << 48, 
-    iD(a.qD.a) << 0 | iD(a.qD.a) << 16 | iD(a.qD.a) << 32 | iD(a.qD.a) << 48
+    iD(a.qA.a) << 0 | iD(a.qA.b) << 16 | iD(a.qA.c) << 32 | iD(a.qA.d) << 48, 
+    iD(a.qB.a) << 0 | iD(a.qB.b) << 16 | iD(a.qB.c) << 32 | iD(a.qB.d) << 48,
+    iD(a.qC.a) << 0 | iD(a.qC.b) << 16 | iD(a.qC.c) << 32 | iD(a.qC.d) << 48, 
+    iD(a.qD.a) << 0 | iD(a.qD.b) << 16 | iD(a.qD.c) << 32 | iD(a.qD.d) << 48
   };
 
   __m256i m2 = {
-    iD(b.qA.a) << 0 | iD(b.qA.a) << 16 | iD(b.qA.a) << 32 | iD(b.qA.a) << 48, 
-    iD(b.qB.a) << 0 | iD(b.qB.a) << 16 | iD(b.qB.a) << 32 | iD(b.qB.a) << 48,
-    iD(b.qC.a) << 0 | iD(b.qC.a) << 16 | iD(b.qC.a) << 32 | iD(b.qC.a) << 48, 
-    iD(b.qD.a) << 0 | iD(b.qD.a) << 16 | iD(b.qD.a) << 32 | iD(b.qD.a) << 48
+    iD(b.qA.a) << 0 | iD(b.qA.b) << 16 | iD(b.qA.c) << 32 | iD(b.qA.d) << 48, 
+    iD(b.qB.a) << 0 | iD(b.qB.b) << 16 | iD(b.qB.c) << 32 | iD(b.qB.d) << 48,
+    iD(b.qC.a) << 0 | iD(b.qC.b) << 16 | iD(b.qC.c) << 32 | iD(b.qC.d) << 48, 
+    iD(b.qD.a) << 0 | iD(b.qD.b) << 16 | iD(b.qD.c) << 32 | iD(b.qD.d) << 48
   };
 
-  auto r1 = _mm256_mulhrs_epi16(m1, m2);
+  auto r1 = _mm256_mullo_epi16(m1, m2);
 
   return {
-    BQuad(B(r1[0]), B(r1[0] << 16), B(r1[0] << 32), B(r1[0] << 48)),
-    BQuad(B(r1[1]), B(r1[1] << 16), B(r1[1] << 32), B(r1[1] << 48)),
-    BQuad(B(r1[2]), B(r1[2] << 16), B(r1[2] << 32), B(r1[2] << 48)),
-    BQuad(B(r1[3]), B(r1[3] << 16), B(r1[3] << 32), B(r1[3] << 48))
+    BQuad(B(r1[0]), B(r1[0] >> 16), B(r1[0] >> 32), B(r1[0] >> 48)),
+    BQuad(B(r1[1]), B(r1[1] >> 16), B(r1[1] >> 32), B(r1[1] >> 48)),
+    BQuad(B(r1[2]), B(r1[2] >> 16), B(r1[2] >> 32), B(r1[2] >> 48)),
+    BQuad(B(r1[3]), B(r1[3] >> 16), B(r1[3] >> 32), B(r1[3] >> 48))
   };
 }
 
@@ -125,15 +131,15 @@ BQuad4 Div(BQuad4 a, BQuad4 b) {
 BQuad8 Add(BQuad8 a, BQuad8 b) {
   auto m1 = BQuad8ToM256(a);
   auto m2 = BQuad8ToM256(b);
-  auto result = _mm256_adds_epu8(m1, m2);
-  return M256ToBQuad8(result);
+  auto r = _mm256_adds_epu8(m1, m2);
+  return M256ToBQuad8(r);
 }
 
 BQuad8 Sub(BQuad8 a, BQuad8 b) {
   auto m1 = BQuad8ToM256(a);
   auto m2 = BQuad8ToM256(b);
-  auto result = _mm256_subs_epu8(m1, m2);
-  return M256ToBQuad8(result);
+  auto r = _mm256_subs_epu8(m1, m2);
+  return M256ToBQuad8(r);
 }
 
 BQuad8 Mul(BQuad8 a, BQuad8 b) {

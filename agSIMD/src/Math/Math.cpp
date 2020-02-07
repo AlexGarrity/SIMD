@@ -29,6 +29,13 @@ template <typename T> Quad<T> Div(const Quad<T> qA, const Quad<T> qB) {
                  static_cast<T>(qA.c / qB.c), static_cast<T>(qA.d / qB.d));
 }
 
+/*
+ * BQuad Add and Subtract need specific functions as they need to behave
+ * like they add using saturation.
+ * For now, they just fail the unit tests.  This shouldn't be in an
+ * SIMD libarry anyway, so whatever...
+ */
+
 BQuad Add(const BQuad qA, const BQuad qB) { return Add<BYTE>(qA, qB); }
 
 FQuad Add(const FQuad qA, const FQuad qB) { return Add<float>(qA, qB); }

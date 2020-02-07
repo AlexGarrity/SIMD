@@ -1,14 +1,9 @@
 #pragma once
 
 
-namespace ag {
-    namespace SIMD {
-        #define LIB_VERSION "1.0.0"
-        #define LIB_NAME "SIMD"
-        #define LIB_EXTENSION "AVX2"
-    }
-}
-
+#define LIB_VERSION "1.0.0"
+#define LIB_NAME "SIMD"
+#define LIB_EXTENSION "SSE4"
 
 #if defined(_MSC_VER)
 // Windows DLL exporting

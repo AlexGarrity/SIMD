@@ -106,7 +106,7 @@ else()
     )
     set(EXTRA_COMPILE_DEFS ${EXTRA_COMPILE_DEFS})
     set(EXTRA_COMPILE_FLAGS ${EXTRA_COMPILE_FLAGS})
-    set(PROJECT_EXTENSION N/A)
+    set(PROJECT_EXTENSION NORM)
     # No extra definitions needed.  Vanilla C++
 endif()
 
@@ -136,6 +136,14 @@ set_target_properties(
     PREFIX "ag"
     OUTPUT_NAME "SIMD"
 )
+
+# If we're using an extension, add it to the project name
+if (NOT "${PROJECT_EXTENSION}" STREQUAL "")
+    set_target_properties(
+        SIMD PROPERTIES
+        SOVERSION ${PROJECT_VERSION}-${PROJECT_EXTENSION}
+    )
+endif()
 
 # Add the include directory to the library
 target_include_directories(

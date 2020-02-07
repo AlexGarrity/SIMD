@@ -17,19 +17,20 @@ const DQuad qd2(FP(qb2.a), FP(qb2.b), FP(qb2.c), FP(qb2.d));
 TEST(T_BYTE, ADD) {
   BQuad r = Add(qb1, qb2);
 
-  EXPECT_EQ((qb1.a + qb2.a) % 256, r.a);
-  EXPECT_EQ((qb1.b + qb2.b) % 256, r.b);
-  EXPECT_EQ((qb1.c + qb2.c) % 256, r.c);
-  EXPECT_EQ((qb1.d + qb2.d) % 256, r.d);
+  EXPECT_EQ((std::clamp(qb1.a + qb2.a, 0, UINT8_MAX)), r.a);
+  EXPECT_EQ((std::clamp(qb1.b + qb2.b, 0, UINT8_MAX)), r.b);
+  EXPECT_EQ((std::clamp(qb1.c + qb2.c, 0, UINT8_MAX)), r.c);
+  EXPECT_EQ((std::clamp(qb1.d + qb2.d, 0, UINT8_MAX)), r.d);
 }
 
 TEST(T_BYTE, SUB) {
+  // Regular maths may fail this as it doesn't use saturation
   BQuad r = Sub(qb1, qb2);
 
-  EXPECT_EQ(B(qb1.a - qb2.a), r.a);
-  EXPECT_EQ(B(qb1.b - qb2.b), r.b);
-  EXPECT_EQ(B(qb1.c - qb2.c), r.c);
-  EXPECT_EQ(B(qb1.d - qb2.d), r.d );
+  EXPECT_EQ(B(std::clamp(qb1.a - qb2.a, 0, UINT8_MAX)), r.a);
+  EXPECT_EQ(B(std::clamp(qb1.b - qb2.b, 0, UINT8_MAX)), r.b);
+  EXPECT_EQ(B(std::clamp(qb1.c - qb2.c, 0, UINT8_MAX)), r.c);
+  EXPECT_EQ(B(std::clamp(qb1.d - qb2.d, 0, UINT8_MAX)), r.d );
 }
 
 TEST(T_BYTE, MUL) {
