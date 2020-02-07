@@ -5,7 +5,7 @@
 using namespace ag::SIMD;
 
 TEST(BQUAD, CREATE_UNIQUE) {
-  BQuad a{1, 3, 5, 7};
+  u8Quad a{1, 3, 5, 7};
   EXPECT_EQ(a.a, 1);
   EXPECT_EQ(a.b, 3);
   EXPECT_EQ(a.c, 5);
@@ -13,7 +13,7 @@ TEST(BQUAD, CREATE_UNIQUE) {
 }
 
 TEST(BQUAD, CREATE_SAME) {
-  BQuad a{1, 1, 1, 1};
+  u8Quad a{1, 1, 1, 1};
   EXPECT_EQ(a.a, 1);
   EXPECT_EQ(a.b, 1);
   EXPECT_EQ(a.c, 1);
@@ -21,7 +21,7 @@ TEST(BQUAD, CREATE_SAME) {
 }
 
 TEST(BQUAD, CREATE_QUICK) {
-  BQuad a{47};
+  u8Quad a{47};
   EXPECT_EQ(a.a, 47);
   EXPECT_EQ(a.b, 47);
   EXPECT_EQ(a.c, 47);
@@ -29,7 +29,7 @@ TEST(BQUAD, CREATE_QUICK) {
 }
 
 TEST(BQUAD2, CREATE_UNIQUE) {
-  BQuad2 a{BQuad{1, 2, 3, 4}, BQuad{5, 6, 7, 8}};
+  u8Quad2 a{u8Quad{1, 2, 3, 4}, u8Quad{5, 6, 7, 8}};
   EXPECT_EQ(a.qA.a, 1);
   EXPECT_EQ(a.qA.b, 2);
   EXPECT_EQ(a.qA.c, 3);
@@ -41,7 +41,7 @@ TEST(BQUAD2, CREATE_UNIQUE) {
 }
 
 TEST(BQUAD2, CREATE_SAME) {
-  BQuad2 a{BQuad{1}, BQuad{1}};
+  u8Quad2 a{u8Quad{1}, u8Quad{1}};
   EXPECT_EQ(a.qA.a, 1);
   EXPECT_EQ(a.qA.b, 1);
   EXPECT_EQ(a.qA.c, 1);
@@ -53,7 +53,7 @@ TEST(BQUAD2, CREATE_SAME) {
 }
 
 TEST(BQUAD2, CREATE_QUICK) {
-  BQuad2 a{47};
+  u8Quad2 a{47};
   EXPECT_EQ(a.qA.a, 47);
   EXPECT_EQ(a.qA.b, 47);
   EXPECT_EQ(a.qA.c, 47);
@@ -65,7 +65,7 @@ TEST(BQUAD2, CREATE_QUICK) {
 }
 
 TEST(BQUAD4, CREATE_UNIQUE) {
-  BQuad4 a{BQuad{1, 2, 3, 4}, BQuad{5, 6, 7, 8}, BQuad{9, 10, 11, 12}, BQuad{13, 14, 15, 16}};
+  u8Quad4 a{u8Quad{1, 2, 3, 4}, u8Quad{5, 6, 7, 8}, u8Quad{9, 10, 11, 12}, u8Quad{13, 14, 15, 16}};
   EXPECT_EQ(a.qA.a, 1);
   EXPECT_EQ(a.qA.b, 2);
   EXPECT_EQ(a.qA.c, 3);
@@ -85,7 +85,7 @@ TEST(BQUAD4, CREATE_UNIQUE) {
 }
 
 TEST(BQUAD4, CREATE_SAME) {
-  BQuad4 a{BQuad{1}, BQuad{1}, BQuad{1}, BQuad{1}};
+  u8Quad4 a{u8Quad{1}, u8Quad{1}, u8Quad{1}, u8Quad{1}};
   EXPECT_EQ(a.qA.a, 1);
   EXPECT_EQ(a.qA.b, 1);
   EXPECT_EQ(a.qA.c, 1);
@@ -105,7 +105,7 @@ TEST(BQUAD4, CREATE_SAME) {
 }
 
 TEST(BQUAD4, CREATE_QUICK) {
-  BQuad4 a{47};
+  u8Quad4 a{47};
   EXPECT_EQ(a.qA.a, 47);
   EXPECT_EQ(a.qA.b, 47);
   EXPECT_EQ(a.qA.c, 47);

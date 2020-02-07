@@ -3,19 +3,18 @@
 #include <gtest/gtest.h>
 
 using namespace ag::SIMD;
-using namespace ag::SIMD::internal;
 
-const BQuad qb1{16, 32, 39, 0};
-const BQuad qb2{1, 4, 13, 2};
+const u8Quad qb1{16, 32, 39, 0};
+const u8Quad qb2{1, 4, 13, 2};
 
-const FQuad qf1(FP(qb1.a), FP(qb1.b), FP(qb1.c), FP(qb1.d));
-const FQuad qf2(FP(qb2.a), FP(qb2.b), FP(qb2.c), FP(qb2.d));
+const FQuad qf1(static_cast<float>(qb1.a), static_cast<float>(qb1.b), static_cast<float>(qb1.c), static_cast<float>(qb1.d));
+const FQuad qf2(static_cast<float>(qb2.a), static_cast<float>(qb2.b), static_cast<float>(qb2.c), static_cast<float>(qb2.d));
 
-const DQuad qd1(FP(qb1.a), FP(qb1.b), FP(qb1.c), FP(qb1.d));
-const DQuad qd2(FP(qb2.a), FP(qb2.b), FP(qb2.c), FP(qb2.d));
+const DQuad qd1(static_cast<float>(qb1.a), static_cast<float>(qb1.b), static_cast<float>(qb1.c), static_cast<float>(qb1.d));
+const DQuad qd2(static_cast<float>(qb2.a), static_cast<float>(qb2.b), static_cast<float>(qb2.c), static_cast<float>(qb2.d));
 
-TEST(T_BYTE, ADD) {
-  BQuad r = Add(qb1, qb2);
+TEST(T_uint8_t, ADD) {
+  u8Quad r = Add(qb1, qb2);
 
   EXPECT_EQ((std::clamp(qb1.a + qb2.a, 0, UINT8_MAX)), r.a);
   EXPECT_EQ((std::clamp(qb1.b + qb2.b, 0, UINT8_MAX)), r.b);
@@ -23,18 +22,18 @@ TEST(T_BYTE, ADD) {
   EXPECT_EQ((std::clamp(qb1.d + qb2.d, 0, UINT8_MAX)), r.d);
 }
 
-TEST(T_BYTE, SUB) {
+TEST(T_uint8_t, SUB) {
   // Regular maths may fail this as it doesn't use saturation
-  BQuad r = Sub(qb1, qb2);
+  u8Quad r = Sub(qb1, qb2);
 
-  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.a - qb2.a, 0, UINT8_MAX)), r.a);
-  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.b - qb2.b, 0, UINT8_MAX)), r.b);
-  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.c - qb2.c, 0, UINT8_MAX)), r.c);
-  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.d - qb2.d, 0, UINT8_MAX)), r.d );
+  EXPECT_EQ(static_cast<uint8_t>(std::clamp(qb1.a - qb2.a, 0, UINT8_MAX)), r.a);
+  EXPECT_EQ(static_cast<uint8_t>(std::clamp(qb1.b - qb2.b, 0, UINT8_MAX)), r.b);
+  EXPECT_EQ(static_cast<uint8_t>(std::clamp(qb1.c - qb2.c, 0, UINT8_MAX)), r.c);
+  EXPECT_EQ(static_cast<uint8_t>(std::clamp(qb1.d - qb2.d, 0, UINT8_MAX)), r.d );
 }
 
-TEST(T_BYTE, MUL) {
-  BQuad r = Mul(qb1, qb2);
+TEST(T_uint8_t, MUL) {
+  u8Quad r = Mul(qb1, qb2);
 
   EXPECT_EQ((qb1.a * qb2.a) % 256, r.a); // 64
   EXPECT_EQ((qb1.b * qb2.b) % 256, r.b); // 16
@@ -42,13 +41,13 @@ TEST(T_BYTE, MUL) {
   EXPECT_EQ((qb1.d * qb2.d) % 256, r.d); // 1
 }
 
-TEST(T_BYTE, DIV) {
-  BQuad r = Div(qb1, qb2);
+TEST(T_uint8_t, DIV) {
+  u8Quad r = Div(qb1, qb2);
 
-  EXPECT_EQ(static_cast<BYTE>(qb1.a / qb2.a), r.a); // /0
-  EXPECT_EQ(static_cast<BYTE>(qb1.b / qb2.b), r.b); // 205
-  EXPECT_EQ(static_cast<BYTE>(qb1.c / qb2.c), r.c); // /0
-  EXPECT_EQ(static_cast<BYTE>(qb1.d / qb2.d), r.d); // /0
+  EXPECT_EQ(static_cast<uint8_t>(qb1.a / qb2.a), r.a); // /0
+  EXPECT_EQ(static_cast<uint8_t>(qb1.b / qb2.b), r.b); // 205
+  EXPECT_EQ(static_cast<uint8_t>(qb1.c / qb2.c), r.c); // /0
+  EXPECT_EQ(static_cast<uint8_t>(qb1.d / qb2.d), r.d); // /0
 }
 
 TEST(T_FLOAT, ADD) {
