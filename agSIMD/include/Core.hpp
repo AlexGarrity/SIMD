@@ -1,9 +1,8 @@
 #pragma once
 
-
-#define LIB_VERSION "1.0.0"
+#define LIB_VERSION "1.0.1"
 #define LIB_NAME "SIMD"
-#define LIB_EXTENSION "NORM"
+#define LIB_EXTENSION "AVX2"
 
 #if defined(_MSC_VER)
 // Windows DLL exporting

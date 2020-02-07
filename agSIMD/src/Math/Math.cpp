@@ -38,14 +38,12 @@ template <typename T> Quad<T> Div(const Quad<T> qA, const Quad<T> qB) {
  * SIMD libarry anyway, so whatever...
  */
 
-BQuad Add(const BQuad qA, const BQuad qB) { 
-  return {
-    B(std::clamp(qA.a + qB.a, 0, UINT8_MAX)),
-    B(std::clamp(qA.b + qB.b, 0, UINT8_MAX)),
-    B(std::clamp(qA.c + qB.c, 0, UINT8_MAX)),
-    B(std::clamp(qA.d + qB.d, 0, UINT8_MAX))
-  };
- }
+BQuad Add(const BQuad qA, const BQuad qB) {
+  return {static_cast<BYTE>(std::clamp(qA.a + qB.a, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.b + qB.b, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.c + qB.c, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.d + qB.d, 0, UINT8_MAX))};
+}
 
 FQuad Add(const FQuad qA, const FQuad qB) { return Add<float>(qA, qB); }
 
@@ -57,14 +55,12 @@ FQuad Mul(const FQuad qA, const FQuad qB) { return Mul<float>(qA, qB); }
 
 DQuad Mul(const DQuad qA, const DQuad qB) { return Mul<double>(qA, qB); }
 
-BQuad Sub(const BQuad qA, const BQuad qB) { 
-    return {
-    B(std::clamp(qA.a - qB.a, 0, UINT8_MAX)),
-    B(std::clamp(qA.b - qB.b, 0, UINT8_MAX)),
-    B(std::clamp(qA.c - qB.c, 0, UINT8_MAX)),
-    B(std::clamp(qA.d - qB.d, 0, UINT8_MAX))
-  };
- }
+BQuad Sub(const BQuad qA, const BQuad qB) {
+  return {static_cast<BYTE>(std::clamp(qA.a - qB.a, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.b - qB.b, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.c - qB.c, 0, UINT8_MAX)),
+          static_cast<BYTE>(std::clamp(qA.d - qB.d, 0, UINT8_MAX))};
+}
 
 FQuad Sub(const FQuad qA, const FQuad qB) { return Sub<float>(qA, qB); }
 

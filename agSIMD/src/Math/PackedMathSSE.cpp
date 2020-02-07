@@ -7,9 +7,6 @@
 namespace ag {
 namespace SIMD {
 
-// Conversion macros
-using namespace internal;
-
 /*
     Indexes are in bytes, rather than bits
 
@@ -24,33 +21,37 @@ using namespace internal;
 */
 
 __m128i BQuad4ToM128(BQuad4 v) {
-  return { 
-    iD(v.qA.a) <<  0 | iD(v.qA.b) <<  8 | iD(v.qA.c) << 16 | iD(v.qA.d) << 24
-  | iD(v.qB.a) << 32 | iD(v.qB.b) << 40 | iD(v.qB.c) << 48 | iD(v.qB.d) << 56,
-    iD(v.qC.a) <<  0 | iD(v.qC.b) <<  8 | iD(v.qC.c) << 16 | iD(v.qC.d) << 24
-  | iD(v.qD.a) << 32 | iD(v.qD.b) << 40 | iD(v.qD.c) << 48 | iD(v.qD.d) << 56
-  };
+  return {
+      static_cast<int64_t>(v.qA.a) << 0 | static_cast<int64_t>(v.qA.b) << 8 |
+          static_cast<int64_t>(v.qA.c) << 16 |
+          static_cast<int64_t>(v.qA.d) << 24 |
+          static_cast<int64_t>(v.qB.a) << 32 |
+          static_cast<int64_t>(v.qB.b) << 40 |
+          static_cast<int64_t>(v.qB.c) << 48 |
+          static_cast<int64_t>(v.qB.d) << 56,
+      static_cast<int64_t>(v.qC.a) << 0 | static_cast<int64_t>(v.qC.b) << 8 |
+          static_cast<int64_t>(v.qC.c) << 16 |
+          static_cast<int64_t>(v.qC.d) << 24 |
+          static_cast<int64_t>(v.qD.a) << 32 |
+          static_cast<int64_t>(v.qD.b) << 40 |
+          static_cast<int64_t>(v.qD.c) << 48 |
+          static_cast<int64_t>(v.qD.d) << 56};
 }
 
 BQuad4 M128ToBQuad4(__m128i v) {
-  return {
-    BQuad(B(v[0] >>  0), B(v[0] >>  8), B(v[0] >> 16), B(v[0] >> 24)),
-    BQuad(B(v[0] >> 32), B(v[0] >> 40), B(v[0] >> 48), B(v[0] >> 56)),
-    BQuad(B(v[1] >>  0), B(v[1] >>  8), B(v[1] >> 16), B(v[1] >> 24)),
-    BQuad(B(v[1] >> 32), B(v[1] >> 40), B(v[1] >> 48), B(v[1] >> 56))
-  };
+  return {BQuad(static_cast<BYTE>(v[0] >> 0), static_cast<BYTE>(v[0] >> 8),
+                static_cast<BYTE>(v[0] >> 16), static_cast<BYTE>(v[0] >> 24)),
+          BQuad(static_cast<BYTE>(v[0] >> 32), static_cast<BYTE>(v[0] >> 40),
+                static_cast<BYTE>(v[0] >> 48), static_cast<BYTE>(v[0] >> 56)),
+          BQuad(static_cast<BYTE>(v[1] >> 0), static_cast<BYTE>(v[1] >> 8),
+                static_cast<BYTE>(v[1] >> 16), static_cast<BYTE>(v[1] >> 24)),
+          BQuad(static_cast<BYTE>(v[1] >> 32), static_cast<BYTE>(v[1] >> 40),
+                static_cast<BYTE>(v[1] >> 48), static_cast<BYTE>(v[1] >> 56))};
 }
 
+__m128 FQuadToM128(FQuad v) { return {v.a, v.b, v.c, v.d}; }
 
-__m128 FQuadToM128(FQuad v) {
-  return {
-    v.a, v.b, v.c, v.d
-  };
-}
-
-FQuad M128ToFQuad(__m128 v) {
-  return { v[0], v[1], v[2], v[3] };
-}
+FQuad M128ToFQuad(__m128 v) { return {v[0], v[1], v[2], v[3]}; }
 
 BQuad4 Add(BQuad4 a, BQuad4 b) {
   auto m1 = BQuad4ToM128(a);
@@ -67,34 +68,47 @@ BQuad4 Sub(BQuad4 a, BQuad4 b) {
 }
 
 BQuad4 Mul(BQuad4 a, BQuad4 b) {
-  // Turns out this is a total pain because there isn't such thing as multiplying BYTEs...
+  // Turns out this is a total pain because there isn't such thing as
+  // multiplying BYTEs...
 
   // Load the bytes into __m128i's like they're 16 bit values...
-  __m128i m1 {
-    iD(a.qA.a) | iD(a.qA.b) << 16 | iD(a.qA.c) << 32 | iD(a.qA.d) << 48,
-    iD(a.qB.a) | iD(a.qB.b) << 16 | iD(a.qB.c) << 32 | iD(a.qB.d) << 48
-  };
-    __m128i m2 {
-    iD(a.qC.a) | iD(a.qC.b) << 16 | iD(a.qC.c) << 32 | iD(a.qC.d) << 48,
-    iD(a.qD.a) | iD(a.qD.b) << 16 | iD(a.qD.c) << 32 | iD(a.qD.d) << 48
-  };
-    __m128i m3 {
-    iD(b.qA.a) | iD(b.qA.b) << 16 | iD(b.qA.c) << 32 | iD(b.qA.d) << 48,
-    iD(b.qB.a) | iD(b.qB.b) << 16 | iD(b.qB.c) << 32 | iD(b.qB.d) << 48
-  };
-    __m128i m4 {
-    iD(b.qC.a) | iD(b.qC.b) << 16 | iD(b.qC.c) << 32 | iD(b.qC.d) << 48,
-    iD(b.qD.a) | iD(b.qD.b) << 16 | iD(b.qD.c) << 32 | iD(b.qD.d) << 48
-  };
+  __m128i m1{static_cast<int64_t>(a.qA.a) | static_cast<int64_t>(a.qA.b) << 16 |
+                 static_cast<int64_t>(a.qA.c) << 32 |
+                 static_cast<int64_t>(a.qA.d) << 48,
+             static_cast<int64_t>(a.qB.a) | static_cast<int64_t>(a.qB.b) << 16 |
+                 static_cast<int64_t>(a.qB.c) << 32 |
+                 static_cast<int64_t>(a.qB.d) << 48};
+  __m128i m2{static_cast<int64_t>(a.qC.a) | static_cast<int64_t>(a.qC.b) << 16 |
+                 static_cast<int64_t>(a.qC.c) << 32 |
+                 static_cast<int64_t>(a.qC.d) << 48,
+             static_cast<int64_t>(a.qD.a) | static_cast<int64_t>(a.qD.b) << 16 |
+                 static_cast<int64_t>(a.qD.c) << 32 |
+                 static_cast<int64_t>(a.qD.d) << 48};
+  __m128i m3{static_cast<int64_t>(b.qA.a) | static_cast<int64_t>(b.qA.b) << 16 |
+                 static_cast<int64_t>(b.qA.c) << 32 |
+                 static_cast<int64_t>(b.qA.d) << 48,
+             static_cast<int64_t>(b.qB.a) | static_cast<int64_t>(b.qB.b) << 16 |
+                 static_cast<int64_t>(b.qB.c) << 32 |
+                 static_cast<int64_t>(b.qB.d) << 48};
+  __m128i m4{static_cast<int64_t>(b.qC.a) | static_cast<int64_t>(b.qC.b) << 16 |
+                 static_cast<int64_t>(b.qC.c) << 32 |
+                 static_cast<int64_t>(b.qC.d) << 48,
+             static_cast<int64_t>(b.qD.a) | static_cast<int64_t>(b.qD.b) << 16 |
+                 static_cast<int64_t>(b.qD.c) << 32 |
+                 static_cast<int64_t>(b.qD.d) << 48};
 
   auto r1 = _mm_mullo_epi16(m1, m3);
   auto r2 = _mm_mullo_epi16(m2, m4);
 
   return {
-    BQuad(B(r1[0]), B(r1[0] >> 16), B(r1[0] >> 32), B(r1[0] >> 48)),
-    BQuad(B(r1[1]), B(r1[1] >> 16), B(r1[1] >> 32), B(r1[1] >> 48)),
-    BQuad(B(r2[0]), B(r2[0] >> 16), B(r2[0] >> 32), B(r2[0] >> 48)),
-    BQuad(B(r2[1]), B(r2[1] >> 16), B(r2[1] >> 32), B(r2[1] >> 48)),
+      BQuad(static_cast<BYTE>(r1[0]), static_cast<BYTE>(r1[0] >> 16),
+            static_cast<BYTE>(r1[0] >> 32), static_cast<BYTE>(r1[0] >> 48)),
+      BQuad(static_cast<BYTE>(r1[1]), static_cast<BYTE>(r1[1] >> 16),
+            static_cast<BYTE>(r1[1] >> 32), static_cast<BYTE>(r1[1] >> 48)),
+      BQuad(static_cast<BYTE>(r2[0]), static_cast<BYTE>(r2[0] >> 16),
+            static_cast<BYTE>(r2[0] >> 32), static_cast<BYTE>(r2[0] >> 48)),
+      BQuad(static_cast<BYTE>(r2[1]), static_cast<BYTE>(r2[1] >> 16),
+            static_cast<BYTE>(r2[1] >> 32), static_cast<BYTE>(r2[1] >> 48)),
   };
 }
 

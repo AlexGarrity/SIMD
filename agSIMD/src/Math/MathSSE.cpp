@@ -10,24 +10,25 @@
 namespace ag {
 namespace SIMD {
 
-// Conversion macros
-using namespace internal;
-
 // Some handy little helper functions for unpacking __mm256 types
 BQuad UnpackChar(__m128i v) {
-  return {B(v[0]), B(v[0] >> 8), B(v[0] >> 16), B(v[0] >> 24)};
+  return {static_cast<BYTE>(v[0]), static_cast<BYTE>(v[0] >> 8),
+          static_cast<BYTE>(v[0] >> 16), static_cast<BYTE>(v[0] >> 24)};
 }
 
 BQuad UnpackShort(__m128i v) {
-  return {B(v[0]), B(v[0] >> 16), B(v[0] >> 32), B(v[0] >> 48)};
+  return {static_cast<BYTE>(v[0]), static_cast<BYTE>(v[0] >> 16),
+          static_cast<BYTE>(v[0] >> 32), static_cast<BYTE>(v[0] >> 48)};
 }
 
 BQuad UnpackInt(__m128i v) {
-  return {B(v[0]), B(v[0] >> 32), B(v[1]), B(v[1] >> 32)};
+  return {static_cast<BYTE>(v[0]), static_cast<BYTE>(v[0] >> 32),
+          static_cast<BYTE>(v[1]), static_cast<BYTE>(v[1] >> 32)};
 }
 
 BQuad UnpackFloatToChar(__m128 v) {
-  return { B(v[0]), B(v[1]), B(v[2]), B(v[3]) };
+  return {static_cast<BYTE>(v[0]), static_cast<BYTE>(v[1]),
+          static_cast<BYTE>(v[2]), static_cast<BYTE>(v[3])};
 }
 
 FQuad UnpackFloat(__m128 v) { return {v[0], v[1], v[2], v[3]}; }
@@ -124,8 +125,10 @@ DQuad Sub(const DQuad qA, const DQuad qB) {
 
 BQuad Div(const BQuad qA, const BQuad qB) {
   // This has to be done as floats, as integer division is unsupported
-  __m128 a{FP(qA.a), FP(qA.b), FP(qA.c), FP(qA.d)};
-  __m128 b{FP(qB.a), FP(qB.b), FP(qB.c), FP(qB.d)};
+  __m128 a{static_cast<float>(qA.a), static_cast<float>(qA.b),
+           static_cast<float>(qA.c), static_cast<float>(qA.d)};
+  __m128 b{static_cast<float>(qB.a), static_cast<float>(qB.b),
+           static_cast<float>(qB.c), static_cast<float>(qB.d)};
   auto result = _mm_div_ps(a, b);
   return UnpackFloatToChar(result);
 }

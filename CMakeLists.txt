@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 17)
 
-project(SIMD VERSION 1.0.0 DESCRIPTION "Simple library for handling SIMD maths")
+project(SIMD VERSION 1.0.1 DESCRIPTION "Simple library for handling SIMD maths")
 
 # Build variables
 set(BUILD_agSIMD TRUE CACHE BOOL "Build the library")

@@ -10,14 +10,12 @@
 namespace ag {
 namespace SIMD {
 
-// Conversion macros
-using namespace internal;
-
 BQuad Add(const BQuad qA, const BQuad qB) {
   __m256i a{qA.a, qA.b, qA.c, qA.d};
   __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_adds_epu8(a, b);
-  return {B(r[0]), B(r[1]), B(r[2]), B(r[3])};
+  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
+          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
 }
 
 FQuad Add(const FQuad qA, const FQuad qB) {
@@ -35,10 +33,11 @@ DQuad Add(const DQuad qA, const DQuad qB) {
 }
 
 BQuad Mul(const BQuad qA, const BQuad qB) {
-  __m256i a {qA.a, qA.b, qA.c, qA.d};
-  __m256i b {qB.a, qB.b, qB.c, qB.d};
+  __m256i a{qA.a, qA.b, qA.c, qA.d};
+  __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_mul_epu32(a, b);
-  return {B(r[0]), B(r[1]), B(r[2]), B(r[3])};
+  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
+          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
 }
 
 FQuad Mul(const FQuad qA, const FQuad qB) {
@@ -59,7 +58,8 @@ BQuad Sub(const BQuad qA, const BQuad qB) {
   __m256i a{qA.a, qA.b, qA.c, qA.d};
   __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_subs_epu8(a, b);
-  return {B(r[0]), B(r[1]), B(r[2]), B(r[3])};
+  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
+          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
 }
 
 FQuad Sub(const FQuad qA, const FQuad qB) {
@@ -77,10 +77,13 @@ DQuad Sub(const DQuad qA, const DQuad qB) {
 }
 
 BQuad Div(const BQuad qA, const BQuad qB) {
-  __m256 a{FP(qA.a), FP(qA.b), FP(qA.c), FP(qA.d)};
-  __m256 b{FP(qB.a), FP(qB.b), FP(qB.c), FP(qB.d)};
+  __m256 a{static_cast<float>(qA.a), static_cast<float>(qA.b),
+           static_cast<float>(qA.c), static_cast<float>(qA.d)};
+  __m256 b{static_cast<float>(qB.a), static_cast<float>(qB.b),
+           static_cast<float>(qB.c), static_cast<float>(qB.d)};
   auto r = _mm256_div_ps(a, b);
-  return {B(r[0]), B(r[1]), B(r[2]), B(r[3])};
+  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
+          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
 }
 
 FQuad Div(const FQuad qA, const FQuad qB) {

@@ -27,10 +27,10 @@ TEST(T_BYTE, SUB) {
   // Regular maths may fail this as it doesn't use saturation
   BQuad r = Sub(qb1, qb2);
 
-  EXPECT_EQ(B(std::clamp(qb1.a - qb2.a, 0, UINT8_MAX)), r.a);
-  EXPECT_EQ(B(std::clamp(qb1.b - qb2.b, 0, UINT8_MAX)), r.b);
-  EXPECT_EQ(B(std::clamp(qb1.c - qb2.c, 0, UINT8_MAX)), r.c);
-  EXPECT_EQ(B(std::clamp(qb1.d - qb2.d, 0, UINT8_MAX)), r.d );
+  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.a - qb2.a, 0, UINT8_MAX)), r.a);
+  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.b - qb2.b, 0, UINT8_MAX)), r.b);
+  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.c - qb2.c, 0, UINT8_MAX)), r.c);
+  EXPECT_EQ(static_cast<BYTE>(std::clamp(qb1.d - qb2.d, 0, UINT8_MAX)), r.d );
 }
 
 TEST(T_BYTE, MUL) {
@@ -45,10 +45,10 @@ TEST(T_BYTE, MUL) {
 TEST(T_BYTE, DIV) {
   BQuad r = Div(qb1, qb2);
 
-  EXPECT_EQ(B(qb1.a / qb2.a), r.a); // /0
-  EXPECT_EQ(B(qb1.b / qb2.b), r.b); // 205
-  EXPECT_EQ(B(qb1.c / qb2.c), r.c); // /0
-  EXPECT_EQ(B(qb1.d / qb2.d), r.d); // /0
+  EXPECT_EQ(static_cast<BYTE>(qb1.a / qb2.a), r.a); // /0
+  EXPECT_EQ(static_cast<BYTE>(qb1.b / qb2.b), r.b); // 205
+  EXPECT_EQ(static_cast<BYTE>(qb1.c / qb2.c), r.c); // /0
+  EXPECT_EQ(static_cast<BYTE>(qb1.d / qb2.d), r.d); // /0
 }
 
 TEST(T_FLOAT, ADD) {

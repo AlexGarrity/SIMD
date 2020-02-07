@@ -81,8 +81,8 @@ template <typename T> struct AG_API Quad8 {
       : qA{a}, qB{b}, qC{c}, qD{d}, qE{e}, qF{f}, qG{g}, qH{h} {}
 
   Quad8(Quad2<T> a, Quad2<T> b, Quad2<T> c, Quad2<T> d)
-      : qA{a.qA}, qB{a.qB}, qC{b.qA}, qD{b.qB}, qE{c.qA}, qF{c.qB}, qG{d.qA}, qH{d.qB} {
-  }
+      : qA{a.qA}, qB{a.qB}, qC{b.qA}, qD{b.qB}, qE{c.qA}, qF{c.qB}, qG{d.qA},
+        qH{d.qB} {}
 
   Quad8(Quad4<T> a, Quad4<T> b)
       : qA{a.qA}, qB{a.qB}, qC{a.qC}, qD{a.qD}, qE{b.qA}, qF{b.qB}, qG{b.qC},
