@@ -7,15 +7,15 @@ namespace ag {
 namespace SIMD {
 
 // Byte operations
-AG_API BQuad4 Add(const BQuad4 a, const BQuad4 b);
-AG_API BQuad4 Mul(const BQuad4 a, const BQuad4 b);
-AG_API BQuad4 Sub(const BQuad4 a, const BQuad4 b);
-AG_API BQuad4 Div(const BQuad4 a, const BQuad4 b);
+AG_API u8Quad4 Add(const u8Quad4 a, const u8Quad4 b);
+AG_API u8Quad4 Mul(const u8Quad4 a, const u8Quad4 b);
+AG_API u8Quad4 Sub(const u8Quad4 a, const u8Quad4 b);
+AG_API u8Quad4 Div(const u8Quad4 a, const u8Quad4 b);
 
-AG_API BQuad8 Add(const BQuad8 a, const BQuad8 b);
-AG_API BQuad8 Mul(const BQuad8 a, const BQuad8 b);
-AG_API BQuad8 Sub(const BQuad8 a, const BQuad8 b);
-AG_API BQuad8 Div(const BQuad8 a, const BQuad8 b);
+AG_API u8Quad8 Add(const u8Quad8 a, const u8Quad8 b);
+AG_API u8Quad8 Mul(const u8Quad8 a, const u8Quad8 b);
+AG_API u8Quad8 Sub(const u8Quad8 a, const u8Quad8 b);
+AG_API u8Quad8 Div(const u8Quad8 a, const u8Quad8 b);
 
 // Float operations
 AG_API FQuad2 Add(const FQuad2 a, const FQuad2 b);

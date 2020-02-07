@@ -10,12 +10,12 @@
 namespace ag {
 namespace SIMD {
 
-BQuad Add(const BQuad qA, const BQuad qB) {
+u8Quad Add(const u8Quad qA, const u8Quad qB) {
   __m256i a{qA.a, qA.b, qA.c, qA.d};
   __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_adds_epu8(a, b);
-  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
-          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
+  return {static_cast<uint8_t>(r[0]), static_cast<uint8_t>(r[1]),
+          static_cast<uint8_t>(r[2]), static_cast<uint8_t>(r[3])};
 }
 
 FQuad Add(const FQuad qA, const FQuad qB) {
@@ -32,12 +32,12 @@ DQuad Add(const DQuad qA, const DQuad qB) {
   return {r[0], r[1], r[2], r[3]};
 }
 
-BQuad Mul(const BQuad qA, const BQuad qB) {
+u8Quad Mul(const u8Quad qA, const u8Quad qB) {
   __m256i a{qA.a, qA.b, qA.c, qA.d};
   __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_mul_epu32(a, b);
-  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
-          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
+  return {static_cast<uint8_t>(r[0]), static_cast<uint8_t>(r[1]),
+          static_cast<uint8_t>(r[2]), static_cast<uint8_t>(r[3])};
 }
 
 FQuad Mul(const FQuad qA, const FQuad qB) {
@@ -54,12 +54,12 @@ DQuad Mul(const DQuad qA, const DQuad qB) {
   return {r[0], r[1], r[2], r[3]};
 }
 
-BQuad Sub(const BQuad qA, const BQuad qB) {
+u8Quad Sub(const u8Quad qA, const u8Quad qB) {
   __m256i a{qA.a, qA.b, qA.c, qA.d};
   __m256i b{qB.a, qB.b, qB.c, qB.d};
   auto r = _mm256_subs_epu8(a, b);
-  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
-          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
+  return {static_cast<uint8_t>(r[0]), static_cast<uint8_t>(r[1]),
+          static_cast<uint8_t>(r[2]), static_cast<uint8_t>(r[3])};
 }
 
 FQuad Sub(const FQuad qA, const FQuad qB) {
@@ -76,14 +76,14 @@ DQuad Sub(const DQuad qA, const DQuad qB) {
   return {r[0], r[1], r[2], r[3]};
 }
 
-BQuad Div(const BQuad qA, const BQuad qB) {
+u8Quad Div(const u8Quad qA, const u8Quad qB) {
   __m256 a{static_cast<float>(qA.a), static_cast<float>(qA.b),
            static_cast<float>(qA.c), static_cast<float>(qA.d)};
   __m256 b{static_cast<float>(qB.a), static_cast<float>(qB.b),
            static_cast<float>(qB.c), static_cast<float>(qB.d)};
   auto r = _mm256_div_ps(a, b);
-  return {static_cast<BYTE>(r[0]), static_cast<BYTE>(r[1]),
-          static_cast<BYTE>(r[2]), static_cast<BYTE>(r[3])};
+  return {static_cast<uint8_t>(r[0]), static_cast<uint8_t>(r[1]),
+          static_cast<uint8_t>(r[2]), static_cast<uint8_t>(r[3])};
 }
 
 FQuad Div(const FQuad qA, const FQuad qB) {

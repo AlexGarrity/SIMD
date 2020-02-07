@@ -21,7 +21,7 @@ namespace SIMD {
 
 */
 
-__m256i BQuad8ToM256(BQuad8 v) {
+__m256i u8Quad8ToM256(u8Quad8 v) {
   return {
       static_cast<int64_t>(v.qA.a) << 0 | static_cast<int64_t>(v.qA.b) << 8 |
           static_cast<int64_t>(v.qA.c) << 16 |
@@ -53,26 +53,26 @@ __m256i BQuad8ToM256(BQuad8 v) {
           static_cast<int64_t>(v.qH.d) << 56};
 }
 
-BQuad8 M256ToBQuad8(__m256i v) {
-  return {BQuad(static_cast<BYTE>(v[0] >> 0), static_cast<BYTE>(v[0] >> 8),
-                static_cast<BYTE>(v[0] >> 16), static_cast<BYTE>(v[0] >> 24)),
-          BQuad(static_cast<BYTE>(v[0] >> 32), static_cast<BYTE>(v[0] >> 40),
-                static_cast<BYTE>(v[0] >> 48), static_cast<BYTE>(v[0] >> 56)),
-          BQuad(static_cast<BYTE>(v[1] >> 0), static_cast<BYTE>(v[1] >> 8),
-                static_cast<BYTE>(v[1] >> 16), static_cast<BYTE>(v[1] >> 24)),
-          BQuad(static_cast<BYTE>(v[1] >> 32), static_cast<BYTE>(v[1] >> 40),
-                static_cast<BYTE>(v[1] >> 48), static_cast<BYTE>(v[1] >> 56)),
-          BQuad(static_cast<BYTE>(v[2] >> 0), static_cast<BYTE>(v[2] >> 8),
-                static_cast<BYTE>(v[2] >> 16), static_cast<BYTE>(v[2] >> 24)),
-          BQuad(static_cast<BYTE>(v[2] >> 32), static_cast<BYTE>(v[2] >> 40),
-                static_cast<BYTE>(v[2] >> 48), static_cast<BYTE>(v[2] >> 56)),
-          BQuad(static_cast<BYTE>(v[3] >> 0), static_cast<BYTE>(v[3] >> 8),
-                static_cast<BYTE>(v[3] >> 16), static_cast<BYTE>(v[3] >> 24)),
-          BQuad(static_cast<BYTE>(v[3] >> 32), static_cast<BYTE>(v[3] >> 40),
-                static_cast<BYTE>(v[3] >> 48), static_cast<BYTE>(v[3] >> 56))};
+u8Quad8 M256Tou8Quad8(__m256i v) {
+  return {u8Quad(static_cast<uint8_t>(v[0] >> 0), static_cast<uint8_t>(v[0] >> 8),
+                static_cast<uint8_t>(v[0] >> 16), static_cast<uint8_t>(v[0] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[0] >> 32), static_cast<uint8_t>(v[0] >> 40),
+                static_cast<uint8_t>(v[0] >> 48), static_cast<uint8_t>(v[0] >> 56)),
+          u8Quad(static_cast<uint8_t>(v[1] >> 0), static_cast<uint8_t>(v[1] >> 8),
+                static_cast<uint8_t>(v[1] >> 16), static_cast<uint8_t>(v[1] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[1] >> 32), static_cast<uint8_t>(v[1] >> 40),
+                static_cast<uint8_t>(v[1] >> 48), static_cast<uint8_t>(v[1] >> 56)),
+          u8Quad(static_cast<uint8_t>(v[2] >> 0), static_cast<uint8_t>(v[2] >> 8),
+                static_cast<uint8_t>(v[2] >> 16), static_cast<uint8_t>(v[2] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[2] >> 32), static_cast<uint8_t>(v[2] >> 40),
+                static_cast<uint8_t>(v[2] >> 48), static_cast<uint8_t>(v[2] >> 56)),
+          u8Quad(static_cast<uint8_t>(v[3] >> 0), static_cast<uint8_t>(v[3] >> 8),
+                static_cast<uint8_t>(v[3] >> 16), static_cast<uint8_t>(v[3] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[3] >> 32), static_cast<uint8_t>(v[3] >> 40),
+                static_cast<uint8_t>(v[3] >> 48), static_cast<uint8_t>(v[3] >> 56))};
 }
 
-__m256i BQuad4ToM256(BQuad4 v) {
+__m256i u8Quad4ToM256(u8Quad4 v) {
   return {
       static_cast<int64_t>(v.qA.a) << 0 | static_cast<int64_t>(v.qA.b) << 8 |
           static_cast<int64_t>(v.qA.c) << 16 |
@@ -88,15 +88,15 @@ __m256i BQuad4ToM256(BQuad4 v) {
           static_cast<int64_t>(v.qD.d) << 24};
 }
 
-BQuad4 M256ToBQuad4(__m256i v) {
-  return {BQuad(static_cast<BYTE>(v[0] >> 0), static_cast<BYTE>(v[0] >> 8),
-                static_cast<BYTE>(v[0] >> 16), static_cast<BYTE>(v[0] >> 24)),
-          BQuad(static_cast<BYTE>(v[1] >> 0), static_cast<BYTE>(v[1] >> 8),
-                static_cast<BYTE>(v[1] >> 16), static_cast<BYTE>(v[1] >> 24)),
-          BQuad(static_cast<BYTE>(v[2] >> 0), static_cast<BYTE>(v[2] >> 8),
-                static_cast<BYTE>(v[2] >> 16), static_cast<BYTE>(v[2] >> 24)),
-          BQuad(static_cast<BYTE>(v[3] >> 0), static_cast<BYTE>(v[3] >> 8),
-                static_cast<BYTE>(v[3] >> 16), static_cast<BYTE>(v[3] >> 24))};
+u8Quad4 M256Tou8Quad4(__m256i v) {
+  return {u8Quad(static_cast<uint8_t>(v[0] >> 0), static_cast<uint8_t>(v[0] >> 8),
+                static_cast<uint8_t>(v[0] >> 16), static_cast<uint8_t>(v[0] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[1] >> 0), static_cast<uint8_t>(v[1] >> 8),
+                static_cast<uint8_t>(v[1] >> 16), static_cast<uint8_t>(v[1] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[2] >> 0), static_cast<uint8_t>(v[2] >> 8),
+                static_cast<uint8_t>(v[2] >> 16), static_cast<uint8_t>(v[2] >> 24)),
+          u8Quad(static_cast<uint8_t>(v[3] >> 0), static_cast<uint8_t>(v[3] >> 8),
+                static_cast<uint8_t>(v[3] >> 16), static_cast<uint8_t>(v[3] >> 24))};
 }
 
 __m256 FQuad2ToM256(FQuad2 v) {
@@ -107,21 +107,21 @@ FQuad2 M256ToFQuad2(__m256 v) {
   return {FQuad(v[0], v[1], v[2], v[3]), FQuad(v[4], v[5], v[6], v[7])};
 }
 
-BQuad4 Add(BQuad4 a, BQuad4 b) {
-  auto m1 = BQuad4ToM256(a);
-  auto m2 = BQuad4ToM256(b);
+u8Quad4 Add(u8Quad4 a, u8Quad4 b) {
+  auto m1 = u8Quad4ToM256(a);
+  auto m2 = u8Quad4ToM256(b);
   auto r = _mm256_adds_epu8(m1, m2);
-  return M256ToBQuad4(r);
+  return M256Tou8Quad4(r);
 }
 
-BQuad4 Sub(BQuad4 a, BQuad4 b) {
-  auto m1 = BQuad4ToM256(a);
-  auto m2 = BQuad4ToM256(b);
+u8Quad4 Sub(u8Quad4 a, u8Quad4 b) {
+  auto m1 = u8Quad4ToM256(a);
+  auto m2 = u8Quad4ToM256(b);
   auto r = _mm256_subs_epu8(m1, m2);
-  return M256ToBQuad4(r);
+  return M256Tou8Quad4(r);
 }
 
-BQuad4 Mul(BQuad4 a, BQuad4 b) {
+u8Quad4 Mul(u8Quad4 a, u8Quad4 b) {
   __m256i m1 = {
       static_cast<int64_t>(a.qA.a) << 0 | static_cast<int64_t>(a.qA.b) << 16 |
           static_cast<int64_t>(a.qA.c) << 32 |
@@ -152,18 +152,18 @@ BQuad4 Mul(BQuad4 a, BQuad4 b) {
 
   auto r1 = _mm256_mullo_epi16(m1, m2);
 
-  return {BQuad(static_cast<BYTE>(r1[0]), static_cast<BYTE>(r1[0] >> 16),
-                static_cast<BYTE>(r1[0] >> 32), static_cast<BYTE>(r1[0] >> 48)),
-          BQuad(static_cast<BYTE>(r1[1]), static_cast<BYTE>(r1[1] >> 16),
-                static_cast<BYTE>(r1[1] >> 32), static_cast<BYTE>(r1[1] >> 48)),
-          BQuad(static_cast<BYTE>(r1[2]), static_cast<BYTE>(r1[2] >> 16),
-                static_cast<BYTE>(r1[2] >> 32), static_cast<BYTE>(r1[2] >> 48)),
-          BQuad(static_cast<BYTE>(r1[3]), static_cast<BYTE>(r1[3] >> 16),
-                static_cast<BYTE>(r1[3] >> 32),
-                static_cast<BYTE>(r1[3] >> 48))};
+  return {u8Quad(static_cast<uint8_t>(r1[0]), static_cast<uint8_t>(r1[0] >> 16),
+                static_cast<uint8_t>(r1[0] >> 32), static_cast<uint8_t>(r1[0] >> 48)),
+          u8Quad(static_cast<uint8_t>(r1[1]), static_cast<uint8_t>(r1[1] >> 16),
+                static_cast<uint8_t>(r1[1] >> 32), static_cast<uint8_t>(r1[1] >> 48)),
+          u8Quad(static_cast<uint8_t>(r1[2]), static_cast<uint8_t>(r1[2] >> 16),
+                static_cast<uint8_t>(r1[2] >> 32), static_cast<uint8_t>(r1[2] >> 48)),
+          u8Quad(static_cast<uint8_t>(r1[3]), static_cast<uint8_t>(r1[3] >> 16),
+                static_cast<uint8_t>(r1[3] >> 32),
+                static_cast<uint8_t>(r1[3] >> 48))};
 }
 
-BQuad4 Div(BQuad4 a, BQuad4 b) {
+u8Quad4 Div(u8Quad4 a, u8Quad4 b) {
   auto r1 = Div(a.qA, b.qA);
   auto r2 = Div(a.qB, b.qB);
   auto r3 = Div(a.qC, b.qC);
@@ -172,25 +172,25 @@ BQuad4 Div(BQuad4 a, BQuad4 b) {
   return {r1, r2, r3, r4};
 }
 
-BQuad8 Add(BQuad8 a, BQuad8 b) {
-  auto m1 = BQuad8ToM256(a);
-  auto m2 = BQuad8ToM256(b);
+u8Quad8 Add(u8Quad8 a, u8Quad8 b) {
+  auto m1 = u8Quad8ToM256(a);
+  auto m2 = u8Quad8ToM256(b);
   auto r = _mm256_adds_epu8(m1, m2);
-  return M256ToBQuad8(r);
+  return M256Tou8Quad8(r);
 }
 
-BQuad8 Sub(BQuad8 a, BQuad8 b) {
-  auto m1 = BQuad8ToM256(a);
-  auto m2 = BQuad8ToM256(b);
+u8Quad8 Sub(u8Quad8 a, u8Quad8 b) {
+  auto m1 = u8Quad8ToM256(a);
+  auto m2 = u8Quad8ToM256(b);
   auto r = _mm256_subs_epu8(m1, m2);
-  return M256ToBQuad8(r);
+  return M256Tou8Quad8(r);
 }
 
-BQuad8 Mul(BQuad8 a, BQuad8 b) {
-  BQuad4 aa{a.qA, a.qB, a.qC, a.qD};
-  BQuad4 ab{a.qE, a.qF, a.qG, a.qH};
-  BQuad4 ba{b.qA, b.qB, b.qC, b.qD};
-  BQuad4 bb{b.qE, b.qF, b.qG, b.qH};
+u8Quad8 Mul(u8Quad8 a, u8Quad8 b) {
+  u8Quad4 aa{a.qA, a.qB, a.qC, a.qD};
+  u8Quad4 ab{a.qE, a.qF, a.qG, a.qH};
+  u8Quad4 ba{b.qA, b.qB, b.qC, b.qD};
+  u8Quad4 bb{b.qE, b.qF, b.qG, b.qH};
 
   auto r1 = Mul(aa, ba);
   auto r2 = Mul(ab, bb);
@@ -198,11 +198,11 @@ BQuad8 Mul(BQuad8 a, BQuad8 b) {
   return {r1, r2};
 }
 
-BQuad8 Div(BQuad8 a, BQuad8 b) {
-  BQuad4 aa{a.qA, a.qB, a.qC, a.qD};
-  BQuad4 ab{a.qE, a.qF, a.qG, a.qH};
-  BQuad4 ba{b.qA, b.qB, b.qC, b.qD};
-  BQuad4 bb{b.qE, b.qF, b.qG, b.qH};
+u8Quad8 Div(u8Quad8 a, u8Quad8 b) {
+  u8Quad4 aa{a.qA, a.qB, a.qC, a.qD};
+  u8Quad4 ab{a.qE, a.qF, a.qG, a.qH};
+  u8Quad4 ba{b.qA, b.qB, b.qC, b.qD};
+  u8Quad4 bb{b.qE, b.qF, b.qG, b.qH};
 
   auto r1 = Div(aa, ba);
   auto r2 = Div(ab, bb);

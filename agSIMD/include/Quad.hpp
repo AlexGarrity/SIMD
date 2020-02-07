@@ -103,24 +103,19 @@ template <typename T> AG_API Quad2<T>::Quad2(Quad8<T> v) : Quad2(v.qA, v.qB) {}
 template <typename T>
 AG_API Quad4<T>::Quad4(Quad8<T> v) : Quad4(v.qA, v.qB, v.qC, v.qD) {}
 
-#define BYTE uint8_t
-#define SHORT int16_t
-#define WORD uint32_t
-#define DWORD uint64_t
-
-using BQuad = Quad<BYTE>;
-using SQuad = Quad<SHORT>;
+using u8Quad = Quad<uint8_t>;
+using u16Quad = Quad<uint16_t>;
 using FQuad = Quad<float>;
 using DQuad = Quad<double>;
 
-using BQuad2 = Quad2<BYTE>;
-using SQuad2 = Quad2<SHORT>;
+using u8Quad2 = Quad2<uint8_t>;
+using u16Quad2 = Quad2<uint16_t>;
 using FQuad2 = Quad2<float>;
 
-using BQuad4 = Quad4<BYTE>;
-using SQuad4 = Quad4<SHORT>;
+using u8Quad4 = Quad4<uint8_t>;
+using u16Quad4 = Quad4<uint16_t>;
 
-using BQuad8 = Quad8<BYTE>;
+using u8Quad8 = Quad8<uint8_t>;
 
 } // namespace SIMD
 } // namespace ag
