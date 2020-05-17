@@ -1,5 +1,6 @@
 # agSIMD
 Small library for more easily performing vector maths, using AVX or SSE extensions.
+**This library is archived as a compiler can optimise this far better than I can**
 
 ### Building
 The easiest way to build is to just run:
